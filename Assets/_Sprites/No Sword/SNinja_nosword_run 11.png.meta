@@ -5,8 +5,7 @@ AssetOrigin:
   productId: 93901
   packageName: Ninja Sprite Sheet (Free)
   packageVersion: 1.0
-  assetPath: Assets/Ninja Files/Ninja PNG/1024 pixel/No Sword/SNinja_nosword_run
-    11.png
+  assetPath: Assets/_Sprites/No Sword/SNinja_nosword_run 11.png
   uploadId: 199688
 TextureImporter:
   internalIDToNameTable: []

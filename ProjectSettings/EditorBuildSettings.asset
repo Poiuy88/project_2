@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/VillageMap.unity
     guid: 212fef9d517fd2a43856b1e31873cfd5
+  - enabled: 1
+    path: Assets/_Scenes/MountainFootMap.unity
+    guid: a4e9d9f7c448d58448f8d6c4181a0cb4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

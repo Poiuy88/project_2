@@ -6,6 +6,14 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 100;
     public int maxMana = 50;
 
+    [Header("Level & Experience")]
+    public int playerLevel = 1;
+    public int currentExp = 0;
+    public int expToNextLevel = 100;
+
+    [Header("Currency")]
+    public int coins = 0;
+
     // Các chỉ số hiện tại
     public int currentHealth;
     public int currentMana;
@@ -63,5 +71,43 @@ public class PlayerStats : MonoBehaviour
             currentMana = maxMana;
         }
         Debug.Log("Player restored " + amount + " mana. Current Mana: " + currentMana);
+    }
+    // Hàm để nhận tiền
+    public void AddCoins(int amount)
+    {
+        coins += amount;
+        Debug.Log("Player received " + amount + " coins. Total: " + coins);
+    }
+
+    // Hàm để nhận kinh nghiệm
+    public void AddExperience(int expGained)
+    {
+        currentExp += expGained;
+        Debug.Log("Player gained " + expGained + " EXP. Total: " + currentExp);
+
+        // Kiểm tra xem đã đủ EXP để lên cấp chưa
+        if (currentExp >= expToNextLevel)
+        {
+            LevelUp();
+        }
+    }
+
+    // Hàm xử lý việc lên cấp
+    void LevelUp()
+    {
+        playerLevel++; // Tăng level
+        currentExp -= expToNextLevel; // Trừ đi EXP đã dùng để lên cấp, giữ lại phần dư
+
+        // Tăng chỉ số cho nhân vật
+        maxHealth += 20;
+        currentHealth = maxHealth; // Hồi đầy máu khi lên cấp
+        maxMana += 10;
+        currentMana = maxMana; // Hồi đầy năng lượng
+
+        // Tăng lượng EXP cần cho level tiếp theo (ví dụ: tăng 50%)
+        expToNextLevel = (int)(expToNextLevel * 1.5f);
+
+        Debug.Log("<color=yellow>LEVEL UP! Reached Level " + playerLevel + "</color>");
+        // Sau này có thể thêm hiệu ứng lên cấp tại đây
     }
 }
