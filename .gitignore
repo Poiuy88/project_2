@@ -1,0 +1,62 @@
+# Tệp này nên được đặt ở thư mục gốc của dự án Unity
+# Lấy bản mới nhất từ https://github.com/github/gitignore/blob/main/Unity.gitignore
+
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# MemoryCaptures có thể rất lớn
+/[Mm]emoryCaptures/
+
+# Các tệp meta của Asset chỉ nên bị bỏ qua khi asset tương ứng cũng bị bỏ qua
+!/[Aa]ssets/**/*.meta
+
+# Bỏ comment dòng này nếu bạn muốn bỏ qua plugin asset store tools
+# /[Aa]ssets/AssetStoreTools*
+
+# Plugin Jetbrains Rider được tạo tự động
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Thư mục cache của Visual Studio
+.vs/
+
+# Thư mục cache của Gradle
+.gradle/
+
+# Các tệp solution và project của VS/MD/Consulo được tạo tự động
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Tệp meta do Unity3D tạo ra
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Tệp báo cáo sự cố do Unity3D tạo ra
+sysinfo.txt
+
+# Các bản builds
+*.apk
+*.aab
+*.unitypackage
+
+# Tệp do Crashlytics tạo ra
+crashlytics-build.properties
