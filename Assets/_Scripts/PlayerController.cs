@@ -192,6 +192,30 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
+    void Awake()
+    {
+        Debug.Log("<color=yellow>Player Awake: Checking for spawn point named: " + GameManager.nextSpawnPointName + "</color>");
+
+        // Kiểm tra xem có tên điểm spawn nào được chỉ định không
+        if (!string.IsNullOrEmpty(GameManager.nextSpawnPointName))
+        {
+            // Tìm đối tượng điểm spawn bằng tên
+            GameObject spawnPoint = GameObject.Find(GameManager.nextSpawnPointName);
+            if (spawnPoint != null)
+            {
+                // Di chuyển nhân vật đến vị trí của điểm spawn
+                transform.position = spawnPoint.transform.position;
+                Debug.Log("Player moved to spawn point: " + GameManager.nextSpawnPointName);
+            }
+            else
+            {
+                Debug.LogWarning("Spawn point not found: " + GameManager.nextSpawnPointName);
+            }
+
+            // Xóa tên điểm spawn để lần sau không dùng lại
+            GameManager.nextSpawnPointName = null;
+        }
+    }
     void Update()
     {
         // --- Input Di chuyển ---

@@ -110,4 +110,19 @@ public class PlayerStats : MonoBehaviour
         Debug.Log("<color=yellow>LEVEL UP! Reached Level " + playerLevel + "</color>");
         // Sau này có thể thêm hiệu ứng lên cấp tại đây
     }
+    // Hàm để tiêu tiền, trả về true nếu thành công, false nếu không đủ tiền
+    public bool SpendCoins(int amount)
+    {
+        if (coins >= amount)
+        {
+            coins -= amount;
+            Debug.Log("Spent " + amount + " coins. Remaining: " + coins);
+            return true; // Giao dịch thành công
+        }
+        else
+        {
+            Debug.Log("Not enough coins! Required: " + amount + ", Have: " + coins);
+            return false; // Giao dịch thất bại
+        }
+    }
 }
