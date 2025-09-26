@@ -41,7 +41,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement; // Thêm thư viện SceneManagement
-
 public class UIManager : MonoBehaviour
 {
     // Các biến vẫn giữ nguyên

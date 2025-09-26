@@ -1,36 +1,3 @@
-// using UnityEngine;
-
-// public class CameraFollow : MonoBehaviour
-// {
-//     // Biến để kéo thả đối tượng Player vào
-//     public Transform target;
-
-//     // Biến để điều chỉnh độ mượt khi camera di chuyển
-//     public float smoothing = 5f;
-
-//     // Biến để giữ khoảng cách ban đầu giữa camera và nhân vật
-//     private Vector3 offset;
-
-//     void Start()
-//     {
-//         // Tính toán khoảng cách ban đầu
-//         offset = transform.position - target.position;
-//     }
-
-//     // LateUpdate được gọi sau khi tất cả các hàm Update đã chạy xong
-//     // Đây là nơi tốt nhất để xử lý camera, đảm bảo nhân vật đã di chuyển xong
-//     void LateUpdate()
-//     {
-//         // Vị trí mới mà camera muốn đến
-//         Vector3 targetCamPos = target.position + offset;
-
-//         // Di chuyển camera một cách mượt mà từ vị trí hiện tại đến vị trí mới
-//         // Vector3.Lerp là hàm nội suy tuyến tính, giúp tạo ra hiệu ứng di chuyển mượt
-//         transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
-//     }
-// }
-
-
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour

@@ -1,66 +1,41 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Thư viện cần thiết để quản lý Scene
+using UnityEngine.SceneManagement;
 
 public class InteractivePortal : MonoBehaviour
 {
-    // Biến để bạn điền tên Scene muốn chuyển đến trong Inspector
-    public string sceneToLoad; 
-    
-    // Biến để bạn kéo thả đối tượng UI Text "Nhấn [E] để vào"
-    public GameObject interactionPrompt; 
+    [Header("Destination Settings")]
+    public string sceneToLoad;
     public string spawnPointName;
 
-    // Biến để kiểm tra xem người chơi có đang ở trong vùng tương tác không
-    private bool playerInRange = false; 
+    [Header("Portal Type")]
+    public bool isExitPortal = false;
 
-    void Start()
-    {
-        // Đảm bảo dòng chữ thông báo được tắt đi khi bắt đầu
-        if (interactionPrompt != null)
-        {
-            interactionPrompt.SetActive(false);
-        }
-    }
+    public GameObject interactionPrompt;
+    private bool playerInRange = false;
 
     void Update()
     {
-        // Nếu người chơi đang ở trong vùng VÀ nhấn phím E
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            // Lưu lại tên điểm spawn trước khi chuyển cảnh
-            GameManager.nextSpawnPointName = spawnPointName;
-            Debug.Log("<color=cyan>Portal: Setting next spawn point to: " + GameManager.nextSpawnPointName + "</color>");
-
-            // Thì thực hiện lệnh chuyển sang scene đã định
-            SceneManager.LoadScene(sceneToLoad);
-        }
-    }
-
-    // Hàm này được Unity tự động gọi khi có đối tượng đi vào vùng trigger
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // Kiểm tra xem đối tượng đó có phải là "Player" không
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = true; // Đánh dấu là người chơi đang ở trong vùng
-            if (interactionPrompt != null)
+            if (isExitPortal)
             {
-                interactionPrompt.SetActive(true); // Bật dòng chữ thông báo
+                Debug.Log("<color=red>EXIT PORTAL ACTIVATED. Preparing to return to: " + GameManager.previousSceneName + "</color>");
+                GameManager.returningToPreviousScene = true;
+                SceneManager.LoadScene(GameManager.previousSceneName);
+            }
+            else
+            {
+                GameManager.previousSceneName = SceneManager.GetActiveScene().name;
+                GameManager.playerPositionOnExit = transform.position;
+                GameManager.nextSpawnPointName = spawnPointName;
+                Debug.Log("<color=cyan>ENTRANCE PORTAL ACTIVATED. Storing return info: Scene=" + GameManager.previousSceneName + ", Position=" + GameManager.playerPositionOnExit + ". Going to: " + sceneToLoad + "</color>");
+                SceneManager.LoadScene(sceneToLoad);
             }
         }
     }
-
-    // Hàm này được Unity tự động gọi khi đối tượng đi ra khỏi vùng trigger
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        // Kiểm tra xem đối tượng đó có phải là "Player" không
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false; // Đánh dấu là người chơi đã rời đi
-            if (interactionPrompt != null)
-            {
-                interactionPrompt.SetActive(false); // Tắt dòng chữ thông báo
-            }
-        }
-    }
+    
+    // Các hàm Start, OnTriggerEnter2D, OnTriggerExit2D giữ nguyên
+    void Start() { if (interactionPrompt != null) interactionPrompt.SetActive(false); }
+    private void OnTriggerEnter2D(Collider2D other) { if (other.CompareTag("Player")) { playerInRange = true; if (interactionPrompt != null) interactionPrompt.SetActive(true); } }
+    private void OnTriggerExit2D(Collider2D other) { if (other.CompareTag("Player")) { playerInRange = false; if (interactionPrompt != null) interactionPrompt.SetActive(false); } }
 }
