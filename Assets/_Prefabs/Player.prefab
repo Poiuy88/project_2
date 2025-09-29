@@ -91,6 +91,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 227eeddbe55e7734b8d0545bb7d2cb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2371711873157438383
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8249773327486929601}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8249773327486929601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2371711873157438383}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.21, y: 0.84, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2131130095909696482}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4828768808420812243
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,6 +140,7 @@ GameObject:
   - component: {fileID: 5003895797241302622}
   - component: {fileID: 9007275159134404036}
   - component: {fileID: 403551784356662580}
+  - component: {fileID: 3743673166444985710}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -131,6 +163,7 @@ Transform:
   m_Children:
   - {fileID: 5349788434726000994}
   - {fileID: 6849376372825981649}
+  - {fileID: 8249773327486929601}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3049957631002726122
@@ -314,9 +347,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff6fb561ae4f084bb7f02e8e55713e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  herbalFruitCount: 0
-  useItemButton: {fileID: 0}
-  fruitCountText: {fileID: 0}
 --- !u!114 &5003895797241302622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -363,6 +393,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d788ef2f1040c6c49889a202f5f3e661, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3743673166444985710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4828768808420812243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2658843426c7bc3418fd4370441c33b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireballPrefab: {fileID: 4367280798346762946, guid: 619bb74be2da70b40893c48d65f45a72, type: 3}
+  firePoint: {fileID: 8249773327486929601}
+  manaCost: 15
+  fireballCooldown: 5
 --- !u!1 &6547865855410084420
 GameObject:
   m_ObjectHideFlags: 0

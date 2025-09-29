@@ -9,6 +9,7 @@ public class HerbalTree : MonoBehaviour
     private bool playerInRange = false; // Kiểm tra xem người chơi có ở trong vùng không
     private float nextHarvestTime = 0f; // Mốc thời gian có thể thu hoạch lần tiếp theo
     private PlayerInventory playerInventory; // Để tham chiếu đến túi đồ của người chơi
+    public ItemData herbalFruitData;
 
     void Update()
     {
@@ -34,23 +35,20 @@ public class HerbalTree : MonoBehaviour
         }
     }
 
+    // 
     private void Harvest()
     {
         Debug.Log("Thu hoạch thành công!");
-
-        // Đặt lại thời gian hồi
         nextHarvestTime = Time.time + cooldownTime;
 
-        // Thêm 1 quả thảo dược vào túi đồ của người chơi
-        if (playerInventory != null)
+        if (playerInventory != null && herbalFruitData != null)
         {
-            playerInventory.AddHerbalFruit(1);
+            // Gọi hàm AddItem mới
+            playerInventory.AddItem(herbalFruitData);
         }
 
-        // Ẩn prompt đi sau khi thu hoạch
         interactionPrompt.SetActive(false);
     }
-
     // Hàm này được tự động gọi khi có đối tượng đi vào vùng trigger
     private void OnTriggerEnter2D(Collider2D other)
     {
