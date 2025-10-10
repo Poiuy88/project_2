@@ -6,11 +6,16 @@ public class HitboxDamage : MonoBehaviour
     // Chúng ta sẽ lấy nó từ script PlayerAttack
     private int damage;
 
+    // void Start()
+    // {
+    //     // Tìm và lấy giá trị sát thương từ script PlayerAttack trên đối tượng cha
+    //     damage = GetComponentInParent<PlayerAttack>().attackDamage;
+    // }
     void Start()
-    {
-        // Tìm và lấy giá trị sát thương từ script PlayerAttack trên đối tượng cha
-        damage = GetComponentInParent<PlayerAttack>().attackDamage;
-    }
+{
+    // Lấy sát thương tổng từ PlayerStats thay vì PlayerAttack
+    damage = GetComponentInParent<PlayerStats>().GetTotalAttack();
+}
 
     private void OnTriggerEnter2D(Collider2D other)
     {

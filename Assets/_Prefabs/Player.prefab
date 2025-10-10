@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 9007275159134404036}
   - component: {fileID: 403551784356662580}
   - component: {fileID: 3743673166444985710}
+  - component: {fileID: 2352911730787953903}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -361,6 +362,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   maxMana: 50
+  baseAttack: 5
+  baseDefense: 0
   playerLevel: 1
   currentExp: 0
   expToNextLevel: 100
@@ -409,6 +412,19 @@ MonoBehaviour:
   firePoint: {fileID: 8249773327486929601}
   manaCost: 15
   fireballCooldown: 5
+--- !u!114 &2352911730787953903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4828768808420812243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bd68e0bf79f11d4a8f972135da25758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentEquipment: []
 --- !u!1 &6547865855410084420
 GameObject:
   m_ObjectHideFlags: 0

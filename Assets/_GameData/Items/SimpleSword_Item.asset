@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d8610156446c743a243807fbaac846, type: 3}
+  m_Name: SimpleSword_Item
+  m_EditorClassIdentifier: 
+  itemName: "Ki\u1EBFm G"
+  icon: {fileID: 7233070793778614789, guid: ad7b70e1b28cefb41ac00ce2490e3661, type: 3}
+  description: Item Description
+  itemType: 1
+  equipSlot: 0
+  attackBonus: 10
+  defenseBonus: 0
+  healthRestore: 0
+  manaRestore: 0

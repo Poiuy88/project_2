@@ -1,60 +1,3 @@
-// // using UnityEngine;
-// // using UnityEngine.UI;
-// // using TMPro;
-
-// // public class InventorySlotUI : MonoBehaviour
-// // {
-// //     public Image icon;
-// //     public TextMeshProUGUI quantityText;
-
-// //     public void DisplayItem(ItemData item, int quantity)
-// //     {
-// //         // Hiển thị icon
-// //         icon.sprite = item.icon;
-// //         icon.enabled = true;
-
-// //         // Hiển thị số lượng (chỉ khi lớn hơn 1)
-// //         if (quantity > 1)
-// //         {
-// //             quantityText.text = quantity.ToString();
-// //             quantityText.enabled = true;
-// //         }
-// //         else
-// //         {
-// //             quantityText.enabled = false;
-// //         }
-// //     }
-// // }
-
-// using UnityEngine;
-// using UnityEngine.UI;
-// using TMPro;
-
-// public class InventorySlotUI : MonoBehaviour
-// {
-//     public Image icon;
-//     public TextMeshProUGUI quantityText;
-
-//     public void DisplayItem(ItemData item, int quantity)
-//     {
-//         // Hiển thị icon
-//         icon.sprite = item.icon;
-//         icon.enabled = true;
-
-//         // Hiển thị số lượng (chỉ khi lớn hơn 1)
-//         if (quantity > 1)
-//         {
-//             quantityText.text = quantity.ToString();
-//             // Dùng gameObject.SetActive để đảm bảo nó luôn hiện ra
-//             quantityText.gameObject.SetActive(true); 
-//         }
-//         else
-//         {
-//             // Ẩn đối tượng Text đi nếu số lượng là 1
-//             quantityText.gameObject.SetActive(false);
-//         }
-//     }
-// }
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -92,12 +35,27 @@ public class InventorySlotUI : MonoBehaviour
     }
 
     // Hàm được gọi khi người chơi nhấp vào ô này
+    // void OnSlotClicked()
+    // {
+    //     if (currentItem != null)
+    //     {
+    //         // Gọi đến hàm UseItem trong túi đồ của người chơi
+    //         PlayerInventory.instance.UseItem(currentItem);
+    //     }
+    // }
     void OnSlotClicked()
+{
+    if (currentItem != null)
     {
-        if (currentItem != null)
+        // Kiểm tra loại vật phẩm trước khi quyết định làm gì
+        if (currentItem.itemType == ItemType.Consumable)
         {
-            // Gọi đến hàm UseItem trong túi đồ của người chơi
             PlayerInventory.instance.UseItem(currentItem);
         }
+        else if (currentItem.itemType == ItemType.Equipment)
+        {
+            EquipmentManager.instance.Equip(currentItem);
+        }
     }
+}
 }
