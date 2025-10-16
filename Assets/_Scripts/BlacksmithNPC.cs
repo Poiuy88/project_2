@@ -1,6 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class BlacksmithNPC : MonoBehaviour
 {
     [Header("UI Panels")]
@@ -8,6 +9,7 @@ public class BlacksmithNPC : MonoBehaviour
     public GameObject shopPanel;
     public GameObject upgradePanel;
     public GameObject interactionPrompt;
+    public TextMeshProUGUI feedbackText;
 
     [Header("Shop Settings")]
     public List<ItemData> itemsForSale; // Danh sách các vật phẩm để bán
@@ -17,6 +19,10 @@ public class BlacksmithNPC : MonoBehaviour
     private bool playerInRange = false;
     private PlayerStats playerStats;
     private PlayerInventory playerInventory;
+    void Start()
+    {
+        if(feedbackText != null) feedbackText.gameObject.SetActive(false);
+    }
 
     void Update()
     {
@@ -71,32 +77,51 @@ public class BlacksmithNPC : MonoBehaviour
     //     }
     // }
     void UpdateShopUI()
-{
-    // Xóa các slot cũ đi
-    foreach (Transform child in shopSlotHolder)
     {
-        Destroy(child.gameObject);
-    }
+        // Xóa các slot cũ đi
+        foreach (Transform child in shopSlotHolder)
+        {
+            Destroy(child.gameObject);
+        }
 
-    // Tạo các slot mới từ danh sách itemsForSale
-    foreach (ItemData item in itemsForSale)
-    {
-        GameObject slotGO = Instantiate(shopSlotPrefab, shopSlotHolder);
-        // Lấy script và truyền dữ liệu vật phẩm, cùng với một tham chiếu đến chính thợ rèn này
-        slotGO.GetComponent<ShopSlotUI>().DisplayItem(item, this);
+        // Tạo các slot mới từ danh sách itemsForSale
+        foreach (ItemData item in itemsForSale)
+        {
+            GameObject slotGO = Instantiate(shopSlotPrefab, shopSlotHolder);
+            // Lấy script và truyền dữ liệu vật phẩm, cùng với một tham chiếu đến chính thợ rèn này
+            slotGO.GetComponent<ShopSlotUI>().DisplayItem(item, this);
+        }
     }
-}
 
     public void BuyItem(ItemData item)
     {
         if (playerStats.SpendCoins(item.price))
         {
             playerInventory.AddItem(item);
-            Debug.Log("Mua thành công " + item.itemName);
+            ShowFeedback("Mua thành công " + item.itemName + "!", 2f, Color.green);
         }
         else
         {
-            Debug.Log("Không đủ tiền!");
+            ShowFeedback("Không đủ tiền!", 2f, Color.red);
+        }
+    }
+    void ShowFeedback(string message, float duration, Color color)
+    {
+        if (feedbackText != null)
+        {
+            StopCoroutine("FadeOutFeedback"); // Dừng coroutine cũ nếu có
+            feedbackText.text = message;
+            feedbackText.color = color;
+            feedbackText.gameObject.SetActive(true);
+            StartCoroutine(FadeOutFeedback(duration));
+        }
+    }
+    IEnumerator FadeOutFeedback(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (feedbackText != null)
+        {
+            feedbackText.gameObject.SetActive(false);
         }
     }
 
