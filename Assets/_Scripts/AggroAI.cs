@@ -120,7 +120,7 @@ public class AggroAI : MonoBehaviour
 
         // 4. Di chuyển tuần tra
         float targetSpeed = movingRight ? patrolSpeed : -patrolSpeed;
-        rb.velocity = new Vector2(targetSpeed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
 
         // 5. Kiểm tra để quay đầu ở cuối đường tuần tra
         if ((movingRight && transform.position.x >= rightPatrollingPoint.x) || 
@@ -140,14 +140,14 @@ public class AggroAI : MonoBehaviour
         }
 
         // Nếu gặp tường hoặc sắp rơi, nhảy lên để đuổi theo
-        if ((isTouchingWall || !isGrounded) && rb.velocity.y == 0)
+        if ((isTouchingWall || !isGrounded) && rb.linearVelocity.y == 0)
         {
             Jump();
         }
 
         // Di chuyển về phía người chơi
         float direction = playerTarget.position.x > transform.position.x ? 1 : -1;
-        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
         FlipTowards(playerTarget.position);
     }
 
@@ -155,7 +155,7 @@ public class AggroAI : MonoBehaviour
     {
         // Logic quay về vị trí cũ (có thể nâng cấp tương tự)
         float direction = startPosition.x > transform.position.x ? 1 : -1;
-        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
         FlipTowards(startPosition);
 
         if (Vector2.Distance(transform.position, startPosition) < 0.5f)

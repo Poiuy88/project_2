@@ -44,18 +44,11 @@ public class InventorySlotUI : MonoBehaviour
     //     }
     // }
     void OnSlotClicked()
-{
-    if (currentItem != null)
     {
-        // Kiểm tra loại vật phẩm trước khi quyết định làm gì
-        if (currentItem.itemType == ItemType.Consumable)
+        if (currentItem != null)
         {
-            PlayerInventory.instance.UseItem(currentItem);
-        }
-        else if (currentItem.itemType == ItemType.Equipment)
-        {
-            EquipmentManager.instance.Equip(currentItem);
+            // Mở panel hành động cho vật phẩm này
+            ItemActionPanel.instance.OpenPanelForInventoryItem(currentItem);
         }
     }
-}
 }

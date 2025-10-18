@@ -244,9 +244,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8b971aab5f3934d847f62a9bc1a936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 30
+  currentHealth: 0
   expValue: 25
   coinValue: 10
-  maxHealth: 30
+  respawnTime: 10
 --- !u!61 &4284545539342383305
 BoxCollider2D:
   m_ObjectHideFlags: 0
