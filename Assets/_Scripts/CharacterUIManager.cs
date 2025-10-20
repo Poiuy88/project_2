@@ -9,6 +9,7 @@ public class CharacterUIManager : MonoBehaviour
     public GameObject inventoryPanel;
     public GameObject equipmentPanel;
     public ItemActionPanel itemActionPanel;
+    public GameObject statsPanel;
 
 
     void Start()
@@ -29,47 +30,38 @@ public class CharacterUIManager : MonoBehaviour
 
     public void OpenInventory()
     {
-        Debug.Log("Hàm OpenInventory() được gọi.");
-        if (inventoryPanel != null)
-        {
-            inventoryPanel.SetActive(true);
-            Debug.Log("InventoryPanel đã được bật.");
-            characterHubPanel.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("LỖI: Tham chiếu InventoryPanel trong CharacterUIManager bị NULL!");
-        }
-        if (equipmentPanel != null) equipmentPanel.SetActive(false);
+        inventoryPanel.SetActive(true);
+        equipmentPanel.SetActive(false);
+        statsPanel.SetActive(false);
+        characterHubPanel.SetActive(false);
     }
 
     public void OpenEquipment()
     {
-        Debug.Log("Hàm OpenEquipment() được gọi.");
-        if (equipmentPanel != null)
-        {
-            equipmentPanel.SetActive(true);
-            Debug.Log("EquipmentPanel đã được bật.");
-            characterHubPanel.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("LỖI: Tham chiếu EquipmentPanel trong CharacterUIManager bị NULL!");
-        }
-        if (inventoryPanel != null) inventoryPanel.SetActive(false);
+        inventoryPanel.SetActive(false);
+        equipmentPanel.SetActive(true);
+        statsPanel.SetActive(false);
+        characterHubPanel.SetActive(false);
     }
 
     public void CloseAllPanels()
     {
-        if (characterHubPanel != null) characterHubPanel.SetActive(false);
-        if (inventoryPanel != null) inventoryPanel.SetActive(false);
-        if (equipmentPanel != null) equipmentPanel.SetActive(false);
-    }
-    public void BackToHubPanel()
-    {
-        Debug.Log("Quay lại Hub Panel.");
+        characterHubPanel.SetActive(false);
         inventoryPanel.SetActive(false);
         equipmentPanel.SetActive(false);
-        characterHubPanel.SetActive(true);
+        statsPanel.SetActive(false);
+    }
+    public void BackToHubPanel()
+{
+    characterHubPanel.SetActive(true);
+    inventoryPanel.SetActive(false);
+    equipmentPanel.SetActive(false);
+    statsPanel.SetActive(false);
+}
+    public void OpenStatsPanel()
+    {
+        statsPanel.SetActive(true);
+        inventoryPanel.SetActive(false);
+        equipmentPanel.SetActive(false);
     }
 }

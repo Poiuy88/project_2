@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement; // << THÊM THƯ VIỆN NÀY
 public class PlayerController : MonoBehaviour
 {
     // --- CÁC BIẾN CỦA BẠN (GIỮ NGUYÊN) ---
-    public float moveSpeed = 5f;
+    private PlayerStats playerStats;
     private Rigidbody2D rb;
     private float moveInput;
     private bool facingRight = true;
@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     // Đăng ký lắng nghe sự kiện khi script được bật
@@ -83,7 +84,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(moveInput * playerStats.moveSpeed, rb.linearVelocity.y);
+
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
     }
 

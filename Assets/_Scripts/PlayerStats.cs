@@ -7,8 +7,11 @@ public class PlayerStats : MonoBehaviour
     public int maxMana = 50;
     public int baseAttack = 5; // Sát thương cơ bản
     public int baseDefense = 0; // Phòng thủ cơ bản
+    
 
     // Các chỉ số được cộng thêm từ trang bị
+    [Header("Base Stats")]
+    public float moveSpeed = 5f;
     private int attackBonus;
     private int defenseBonus;
     [Header("Level & Experience")]
