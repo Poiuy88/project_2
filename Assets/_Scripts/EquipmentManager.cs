@@ -3,57 +3,54 @@ using UnityEngine;
 public class EquipmentManager : MonoBehaviour
 {
     public static EquipmentManager instance;
-    void Awake() { instance = this; }
-
+    
     public ItemData[] currentEquipment;
     public delegate void OnEquipmentChanged(ItemData newItem, ItemData oldItem);
     public OnEquipmentChanged onEquipmentChanged;
 
     private PlayerInventory inventory;
     private PlayerStats playerStats;
-
-    void Start()
+    void Awake()
     {
-        inventory = PlayerInventory.instance;
-        playerStats = GetComponent<PlayerStats>();
+        instance = this;
 
-        // Khởi tạo mảng trang bị dựa trên số lượng slot
+        // Tự động tạo mảng có kích thước bằng số lượng slot trong enum
+        // DÒNG NÀY ĐƯỢC CHUYỂN TỪ START() LÊN ĐÂY
         int numSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
         currentEquipment = new ItemData[numSlots];
     }
+    void Start()
+    {
+        // Hàm Start bây giờ chỉ còn nhiệm vụ lấy các tham chiếu khác
+        inventory = PlayerInventory.instance;
+        playerStats = GetComponent<PlayerStats>();
+    }
 
-    // public void Equip(ItemData newItem)
-    // {
-    //     if (playerStats.playerLevel < 5)
-    // {
-    //     Debug.Log("Cần đạt level 5 để có thể trang bị vật phẩm!");
-    //     return; // Dừng hàm lại, không cho phép mặc đồ
-    // }
-    //     int slotIndex = (int)newItem.equipSlot;
-
-    //     // Nếu đã có đồ ở ô đó, tháo ra trước
-    //     if (currentEquipment[slotIndex] != null)
-    //     {
-    //         inventory.AddItem(currentEquipment[slotIndex]);
-    //     }
-
-    //     currentEquipment[slotIndex] = newItem;
-    //     inventory.RemoveItem(newItem);
-    //     UpdateStats();
-    // }
     public void Equip(ItemData newItem)
     {
-        if (playerStats.playerLevel < 5) { /*...*/ return; }
+        if (playerStats.playerLevel < 5)
+        {
+            Debug.Log("Cần đạt level 5 để trang bị!");
+            return;
+        }
+
         int slotIndex = (int)newItem.equipSlot;
         ItemData oldItem = null;
+
         if (currentEquipment[slotIndex] != null)
         {
             oldItem = currentEquipment[slotIndex];
             inventory.AddItem(oldItem);
         }
+
         currentEquipment[slotIndex] = newItem;
         inventory.RemoveItem(newItem);
-        if (onEquipmentChanged != null) { onEquipmentChanged.Invoke(newItem, oldItem); }
+
+        // Gửi tín hiệu quan trọng cho UI
+        if (onEquipmentChanged != null)
+        {
+            onEquipmentChanged.Invoke(newItem, oldItem);
+        }
         UpdateStats();
     }
 
@@ -64,7 +61,12 @@ public class EquipmentManager : MonoBehaviour
             ItemData oldItem = currentEquipment[slotIndex];
             inventory.AddItem(oldItem);
             currentEquipment[slotIndex] = null;
-            if (onEquipmentChanged != null) { onEquipmentChanged.Invoke(null, oldItem); }
+
+            // Gửi tín hiệu quan trọng cho UI
+            if (onEquipmentChanged != null)
+            {
+                onEquipmentChanged.Invoke(null, oldItem);
+            }
             UpdateStats();
         }
     }

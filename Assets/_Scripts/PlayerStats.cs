@@ -38,18 +38,6 @@ public class PlayerStats : MonoBehaviour
         return baseAttack + attackBonus;
     }
 
-    // // Hàm để nhận sát thương
-    // public void TakeDamage(int damage)
-    // {
-    //     currentHealth -= damage;
-    //     // Ngăn máu giảm xuống dưới 0
-    //     if (currentHealth < 0)
-    //     {
-    //         currentHealth = 0;
-    //     }
-    //     Debug.Log("Player took " + damage + " damage. Current Health: " + currentHealth);
-    //     // Sau này chúng ta sẽ xử lý việc nhân vật chết khi máu về 0 ở đây
-    // }
     // Hàm để tính toán sát thương nhận vào (có trừ giáp)
     public void TakeDamage(int damage)
     {

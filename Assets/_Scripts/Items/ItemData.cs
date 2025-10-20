@@ -2,7 +2,7 @@
 using UnityEngine;
 
 public enum ItemType { Consumable, Equipment, Material }
-public enum EquipmentSlot { Weapon, Armor } // Các ô trang bị, có thể thêm Helmet, Boots...
+public enum EquipmentSlot { Weapon, Armor, Helmet, Boots } // Các ô trang bị, có thể thêm Helmet, Boots...
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject

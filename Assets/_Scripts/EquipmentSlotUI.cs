@@ -27,7 +27,8 @@ public class EquipmentSlotUI : MonoBehaviour
             if (currentItem != null)
             {
                 // Khi được bấm, mở panel hành động cho vật phẩm này
-                ItemActionPanel.instance.OpenPanelForEquipmentItem(currentItem);
+                //ItemActionPanel.instance.OpenPanelForEquipmentItem(currentItem);
+                CharacterUIManager.instance.itemActionPanel.OpenPanelForEquipmentItem(currentItem);
             }
         });
     }

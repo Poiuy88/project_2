@@ -33,22 +33,11 @@ public class InventorySlotUI : MonoBehaviour
         // Thêm một listener mới, khi nút được bấm, nó sẽ gọi hàm OnSlotClicked
         button.onClick.AddListener(OnSlotClicked);
     }
-
-    // Hàm được gọi khi người chơi nhấp vào ô này
-    // void OnSlotClicked()
-    // {
-    //     if (currentItem != null)
-    //     {
-    //         // Gọi đến hàm UseItem trong túi đồ của người chơi
-    //         PlayerInventory.instance.UseItem(currentItem);
-    //     }
-    // }
     void OnSlotClicked()
     {
         if (currentItem != null)
         {
-            // Mở panel hành động cho vật phẩm này
-            ItemActionPanel.instance.OpenPanelForInventoryItem(currentItem);
+            CharacterUIManager.instance.itemActionPanel.OpenPanelForInventoryItem(currentItem);
         }
     }
 }

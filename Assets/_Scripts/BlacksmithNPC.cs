@@ -60,22 +60,6 @@ public class BlacksmithNPC : MonoBehaviour
         upgradePanel.SetActive(false);
         mainPanel.SetActive(true);
     }
-
-    // --- Logic Cửa hàng ---
-    // void UpdateShopUI()
-    // {
-    //     foreach (Transform child in shopSlotHolder)
-    //     {
-    //         Destroy(child.gameObject);
-    //     }
-
-    //     foreach (ItemData item in itemsForSale)
-    //     {
-    //         // Giả sử shopSlotPrefab của bạn có script ShopSlotUI
-    //         // GameObject slotGO = Instantiate(shopSlotPrefab, shopSlotHolder);
-    //         // slotGO.GetComponent<ShopSlotUI>().DisplayItem(item);
-    //     }
-    // }
     void UpdateShopUI()
     {
         // Xóa các slot cũ đi

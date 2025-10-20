@@ -4,10 +4,9 @@ using TMPro;
 
 public class ItemActionPanel : MonoBehaviour
 {
-    public static ItemActionPanel instance;
-    void Awake() { instance = this; }
 
     public GameObject panel;
+    public Image itemIcon;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI statsText;
     public Button equipButton;
@@ -26,6 +25,8 @@ public class ItemActionPanel : MonoBehaviour
     {
         currentItem = item;
         panel.SetActive(true);
+
+        itemIcon.sprite = item.icon; // <<< THÊM DÒNG NÀY ĐỂ GÁN ICON
         nameText.text = item.itemName;
         statsText.text = "Tấn công: " + item.attackBonus + "\nPhòng thủ: " + item.defenseBonus;
 
@@ -37,6 +38,8 @@ public class ItemActionPanel : MonoBehaviour
     {
         currentItem = item;
         panel.SetActive(true);
+
+        itemIcon.sprite = item.icon; // <<< THÊM DÒNG NÀY ĐỂ GÁN ICON
         nameText.text = item.itemName;
         statsText.text = "Tấn công: " + item.attackBonus + "\nPhòng thủ: " + item.defenseBonus;
 

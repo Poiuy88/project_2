@@ -62,25 +62,6 @@ public class AggroAI : MonoBehaviour
                 break;
         }
     }
-    // void Update()
-    // {
-    //     // --- SỬ DỤNG RAYCAST ĐỂ KIỂM TRA MẶT ĐẤT ---
-    //     Vector2 raycastOrigin = (Vector2)transform.position + groundCheckOffset;
-    //     RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, Vector2.down, groundCheckDistance, whatIsGround);
-
-    //     // Nếu tia laser chạm vào thứ gì đó, isGrounded là true
-    //     isGrounded = hit.collider != null;
-
-    //     // --- Logic AI giữ nguyên ---
-    //     switch (currentState)
-    //     {
-    //         case AIState.Patrolling: Patrol(); break;
-    //         case AIState.Chasing: ChasePlayer(); break;
-    //         case AIState.Returning: ReturnToStart(); break;
-    //     }
-    // }
-
-    // --- CÁC HÀNH VI CỦA AI ---
 
     void Patrol()
     {
@@ -208,10 +189,4 @@ public class AggroAI : MonoBehaviour
         }
     }
     
-    // private void OnDrawGizmosSelected()
-    // {
-    //     Gizmos.color = Color.red;
-    //     Vector2 raycastOrigin = (Vector2)transform.position + groundCheckOffset;
-    //     Gizmos.DrawLine(raycastOrigin, raycastOrigin + Vector2.down * groundCheckDistance);
-    // }
 }

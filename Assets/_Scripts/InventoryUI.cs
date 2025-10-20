@@ -43,8 +43,7 @@ public class InventoryUI : MonoBehaviour
 
     void Update()
     {
-        // Logic bật/tắt túi đồ bây giờ nằm ở CharacterUIManager,
-        // nên hàm Update() này có thể để trống hoặc xóa đi.
+        
     }
 
     void UpdateUI()
