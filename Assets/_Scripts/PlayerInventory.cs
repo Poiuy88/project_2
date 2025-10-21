@@ -53,4 +53,21 @@ public class PlayerInventory : MonoBehaviour
             if (onInventoryChangedCallback != null) { onInventoryChangedCallback.Invoke(); }
         }
     }
+    public void RemoveSpecificItem(ItemData itemToRemove)
+    {
+        if (items.ContainsKey(itemToRemove))
+        {
+            items[itemToRemove]--; // Giảm số lượng
+            if (items[itemToRemove] <= 0)
+            {
+                items.Remove(itemToRemove); // Xóa khỏi danh sách nếu số lượng về 0
+            }
+
+            // Kích hoạt cập nhật UI
+            if (onInventoryChangedCallback != null)
+            {
+                onInventoryChangedCallback.Invoke();
+            }
+        }
+    }
 }

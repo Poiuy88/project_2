@@ -19,9 +19,9 @@ MonoBehaviour:
   itemType: 1
   equipSlot: 1
   attackBonus: 0
-  defenseBonus: 50
-  healthBonus: 1000
-  manaBonus: 1000
+  defenseBonus: 20
+  healthBonus: 200
+  manaBonus: 200
   speedBonus: 0
-  healthRestore: 0
-  manaRestore: 0
+  healthRestore: 200
+  manaRestore: 200

@@ -2,53 +2,78 @@ using UnityEngine;
 
 public class EnemyPatrol : MonoBehaviour
 {
-    public float speed = 2f; // Tốc độ di chuyển
-    public float patrolDistance = 3f; // Khoảng cách đi tuần tra mỗi bên
+    [Header("Movement Stats")]
+    public float speed = 1.5f; // Tốc độ tuần tra mặc định
+    public float patrolDistance = 4f;
 
-    private Vector3 startPosition;
+    [Header("Ground Detection")]
+    public Transform groundCheck; // <<< Ô NÀY SẼ XUẤT HIỆN
+    public LayerMask whatIsGround; // <<< Ô NÀY SẼ XUẤT HIỆN
+    public float groundCheckDistance = 0.5f; // <<< Ô NÀY SẼ XUẤT HIỆN
+    public Vector2 groundCheckOffset; // <<< Ô NÀY SẼ XUẤT HIỆN
+
+    private bool isGrounded;
     private bool movingRight = true;
+    private Vector3 startPosition;
     private Vector3 leftPatrolPoint, rightPatrolPoint;
+
+    private Rigidbody2D rb;
     private Transform spriteTransform;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
+        spriteTransform = transform;
         startPosition = transform.position;
         leftPatrolPoint = startPosition - new Vector3(patrolDistance, 0, 0);
         rightPatrolPoint = startPosition + new Vector3(patrolDistance, 0, 0);
-        spriteTransform = transform; // Giả sử sprite và script cùng 1 object
     }
 
-    void Update()
+    // Chuyển sang FixedUpdate để xử lý vật lý tốt hơn
+    void FixedUpdate()
     {
-        if (movingRight)
+        // --- KIỂM TRA MẶT ĐẤT BẰNG RAYCAST ---
+        Vector2 raycastOrigin = (Vector2)transform.position + groundCheckOffset;
+        RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, Vector2.down, groundCheckDistance, whatIsGround);
+        isGrounded = hit.collider != null;
+
+        // --- Logic Tuần tra ---
+        Patrol();
+    }
+
+    void Patrol()
+    {
+        // Nếu không có đất phía trước hoặc sắp rơi, quay đầu
+        if (!isGrounded)
         {
-            // Di chuyển sang phải
-            transform.position = Vector3.MoveTowards(transform.position, rightPatrolPoint, speed * Time.deltaTime);
-            if (transform.position == rightPatrolPoint)
-            {
-                // Khi đến điểm đích, đổi hướng
-                movingRight = false;
-                Flip();
-            }
+            movingRight = !movingRight;
+            Flip();
         }
-        else
+
+        float targetSpeed = movingRight ? speed : -speed;
+        rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+
+        // Kiểm tra để quay đầu ở cuối đường tuần tra
+        if ((movingRight && transform.position.x >= rightPatrolPoint.x) ||
+            (!movingRight && transform.position.x <= leftPatrolPoint.x))
         {
-            // Di chuyển sang trái
-            transform.position = Vector3.MoveTowards(transform.position, leftPatrolPoint, speed * Time.deltaTime);
-            if (transform.position == leftPatrolPoint)
-            {
-                // Khi đến điểm đích, đổi hướng
-                movingRight = true;
-                Flip();
-            }
+            movingRight = !movingRight;
+            Flip();
         }
     }
 
     void Flip()
     {
-        // Lật hình ảnh của quái vật
         Vector3 scaler = spriteTransform.localScale;
         scaler.x *= -1;
         spriteTransform.localScale = scaler;
+    }
+
+    // Hàm vẽ Gizmos để dễ nhìn
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Vector2 raycastOrigin = (Vector2)transform.position + groundCheckOffset;
+        Gizmos.DrawLine(raycastOrigin, raycastOrigin + Vector2.down * groundCheckDistance);
     }
 }
