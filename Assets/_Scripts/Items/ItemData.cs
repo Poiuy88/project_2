@@ -1,24 +1,27 @@
-
 using UnityEngine;
 
 public enum ItemType { Consumable, Equipment, Material }
-public enum EquipmentSlot { Weapon, Armor, Helmet, Boots } // Các ô trang bị, có thể thêm Helmet, Boots...
+public enum EquipmentSlot { Weapon, Armor, Helmet, Boots }
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject
 {
-    public int price; // Giá bán của vật phẩm
     public string itemName = "New Item";
     public Sprite icon = null;
     public string description = "Item Description";
+    public int price;
 
     [Header("Item Properties")]
     public ItemType itemType;
 
-    [Header("Equipment Stats")]
-    public EquipmentSlot equipSlot; // Vị trí mặc trang bị này
-    public int attackBonus; // Công cộng thêm
-    public int defenseBonus; // Thủ cộng thêm
+    [Header("Equipment Properties")]
+    public EquipmentSlot equipSlot;
+    // Các chỉ số cộng thêm
+    public int attackBonus;
+    public int defenseBonus;
+    public int healthBonus;
+    public int manaBonus;
+    public float speedBonus; // Tốc chạy dùng số lẻ nên là float
 
     [Header("Consumable Stats")]
     public int healthRestore;

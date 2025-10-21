@@ -72,17 +72,27 @@ public class EquipmentManager : MonoBehaviour
     }
     void UpdateStats()
     {
+        // Reset các bonus về 0 trước khi tính lại
         int totalAttackBonus = 0;
         int totalDefenseBonus = 0;
+        int totalHealthBonus = 0;
+        int totalManaBonus = 0;
+        float totalSpeedBonus = 0f;
 
+        // Duyệt qua tất cả các trang bị đang mặc
         foreach (ItemData item in currentEquipment)
         {
-            if (item != null)
+            if (item != null) // Nếu ô đó có đồ
             {
+                // Cộng dồn các chỉ số từ món đồ đó
                 totalAttackBonus += item.attackBonus;
                 totalDefenseBonus += item.defenseBonus;
+                totalHealthBonus += item.healthBonus;
+                totalManaBonus += item.manaBonus;
+                totalSpeedBonus += item.speedBonus;
             }
         }
-        playerStats.UpdateEquipmentStats(totalAttackBonus, totalDefenseBonus);
+        // Gửi tất cả các bonus đã tính được cho PlayerStats
+        playerStats.UpdateEquipmentBonuses(totalHealthBonus, totalManaBonus, totalAttackBonus, totalDefenseBonus, totalSpeedBonus);
     }
 }

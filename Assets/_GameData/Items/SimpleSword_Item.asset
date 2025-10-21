@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d8610156446c743a243807fbaac846, type: 3}
   m_Name: SimpleSword_Item
   m_EditorClassIdentifier: 
-  price: 11
-  itemName: "Ki\u1EBFm G"
+  itemName: "Ki\u1EBFm c\u1EA5p 5"
   icon: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
   description: Item Description
+  price: 11
   itemType: 1
   equipSlot: 0
-  attackBonus: 10
+  attackBonus: 20
   defenseBonus: 0
+  healthBonus: 0
+  manaBonus: 0
+  speedBonus: 0
   healthRestore: 0
   manaRestore: 0

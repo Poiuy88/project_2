@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d8610156446c743a243807fbaac846, type: 3}
   m_Name: ao_giap_Item
   m_EditorClassIdentifier: 
-  price: 11
-  itemName: "\xE1o gi\xE1p"
+  itemName: "\xE1o gi\xE1p c\u1EA5p 5"
   icon: {fileID: 21300000, guid: 5105fe1d825990746b9a92407ea447ca, type: 3}
   description: Item Description
+  price: 11
   itemType: 1
   equipSlot: 1
   attackBonus: 0
-  defenseBonus: 0
+  defenseBonus: 50
+  healthBonus: 1000
+  manaBonus: 1000
+  speedBonus: 0
   healthRestore: 0
   manaRestore: 0

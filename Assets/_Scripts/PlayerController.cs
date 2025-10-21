@@ -10,10 +10,12 @@ public class PlayerController : MonoBehaviour
     private bool facingRight = true;
     public float jumpForce = 12f;
     private bool isGrounded;
-    public Transform groundCheck;
-    public float checkRadius = 0.2f;
-    public LayerMask whatIsGround;
     private Animator anim;
+    [Header("Ground Check Settings")] // Thêm Header để gom nhóm
+    public Transform groundCheck; // Vẫn dùng vị trí này làm tâm
+    public float checkRadius = 0.5f; // Đổi tên biến này thành groundCheckDistance nếu muốn rõ hơn
+    public LayerMask whatIsGround;
+    public float footOffset = 0.3f; // Khoảng cách lệch sang hai bên của tia Raycast
 
 
     // --- HÀM AWAKE() CŨ SẼ BỊ XÓA VÀ THAY BẰNG LOGIC MỚI NÀY ---
@@ -84,9 +86,24 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // --- Di chuyển ---
         rb.linearVelocity = new Vector2(moveInput * playerStats.moveSpeed, rb.linearVelocity.y);
 
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
+        // --- KIỂM TRA MẶT ĐẤT BẰNG HAI TIA RAYCAST ---
+
+        // Tính toán vị trí bắt đầu cho hai tia
+        Vector2 raycastOriginLeft = (Vector2)groundCheck.position - new Vector2(footOffset, 0);
+        Vector2 raycastOriginRight = (Vector2)groundCheck.position + new Vector2(footOffset, 0);
+
+        // Bắn hai tia Raycast ngắn xuống dưới
+        RaycastHit2D hitLeft = Physics2D.Raycast(raycastOriginLeft, Vector2.down, checkRadius, whatIsGround);
+        RaycastHit2D hitRight = Physics2D.Raycast(raycastOriginRight, Vector2.down, checkRadius, whatIsGround);
+
+        // Chỉ cần một trong hai tia chạm đất là coi như đang đứng trên đất
+        isGrounded = hitLeft.collider != null || hitRight.collider != null;
+
+        // In ra Console để kiểm tra (có thể xóa sau)
+        // Debug.Log("isGrounded (Dual Raycast): " + isGrounded);
     }
 
     void CheckDirectionToFace()
@@ -103,11 +120,17 @@ public class PlayerController : MonoBehaviour
         transform.localScale = scaler;
     }
 
+    // --- HÀM VẼ GIZMOS ĐỂ DỄ NHÌN ---
+    // Thay thế hàm OnDrawGizmosSelected() cũ bằng hàm này
     private void OnDrawGizmosSelected()
     {
         if (groundCheck == null) return;
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
+        Vector2 raycastOriginLeft = (Vector2)groundCheck.position - new Vector2(footOffset, 0);
+        Vector2 raycastOriginRight = (Vector2)groundCheck.position + new Vector2(footOffset, 0);
+        // Vẽ hai đường thẳng biểu thị tia Raycast
+        Gizmos.DrawLine(raycastOriginLeft, raycastOriginLeft + Vector2.down * checkRadius);
+        Gizmos.DrawLine(raycastOriginRight, raycastOriginRight + Vector2.down * checkRadius);
     }
     public bool IsFacingRight()
     {

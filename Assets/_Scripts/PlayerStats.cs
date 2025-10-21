@@ -2,18 +2,31 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
-    // Các chỉ số tối đa
-    public int maxHealth = 100;
-    public int maxMana = 50;
-    public int baseAttack = 5; // Sát thương cơ bản
-    public int baseDefense = 0; // Phòng thủ cơ bản
-    
-
-    // Các chỉ số được cộng thêm từ trang bị
     [Header("Base Stats")]
-    public float moveSpeed = 5f;
+    public float baseMoveSpeed = 5f;
+    public int baseMaxHealth = 100;
+    public int baseMaxMana = 50;
+    public int baseAttack = 5;
+    public int baseDefense = 0;
+
+    // Biến lưu trữ chỉ số cộng thêm từ trang bị
+    private int healthBonus;
+    private int manaBonus;
     private int attackBonus;
     private int defenseBonus;
+    private float speedBonus;
+
+    [Header("Live Stats")]
+    public int currentHealth;
+    public int currentMana;
+
+    // Các thuộc tính (Getter) để lấy chỉ số tổng cuối cùng
+    public int maxHealth { get { return baseMaxHealth + healthBonus; } }
+    public int maxMana { get { return baseMaxMana + manaBonus; } }
+    public int attack { get { return baseAttack + attackBonus; } }
+    public int defense { get { return baseDefense + defenseBonus; } }
+    public float moveSpeed { get { return baseMoveSpeed + speedBonus; } }
+
     [Header("Level & Experience")]
     public int playerLevel = 1;
     public int currentExp = 0;
@@ -22,18 +35,13 @@ public class PlayerStats : MonoBehaviour
     [Header("Currency")]
     public int coins = 0;
 
-    // Các chỉ số hiện tại
-    [Header("Live Stats")]
-    public int currentHealth;
-    public int currentMana;
-
 
     // Hàm Awake được gọi trước cả hàm Start
     void Awake()
     {
-        // Khi game bắt đầu, máu và năng lượng sẽ đầy
-        currentHealth = maxHealth;
-        currentMana = maxMana;
+        // Khởi tạo máu/mana dựa trên chỉ số gốc
+        currentHealth = baseMaxHealth;
+        currentMana = baseMaxMana;
     }
     // Hàm để lấy tổng sát thương (cơ bản + trang bị)
     public int GetTotalAttack()
@@ -44,25 +52,18 @@ public class PlayerStats : MonoBehaviour
     // Hàm để tính toán sát thương nhận vào (có trừ giáp)
     public void TakeDamage(int damage)
     {
-        int totalDefense = baseDefense + defenseBonus;
-        damage -= totalDefense;
-        if (damage < 1) damage = 1; // Luôn nhận ít nhất 1 sát thương
+        damage -= defense; // Dùng chỉ số phòng thủ tổng
+        if (damage < 1) damage = 1;
 
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
-        Debug.Log("Player took " + damage + " damage. Current Health: " + currentHealth);
     }
 
     // Hàm để hồi máu
     public void Heal(int amount)
     {
         currentHealth += amount;
-        // Ngăn máu hồi vượt quá mức tối đa
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
-        Debug.Log("Player healed " + amount + " HP. Current Health: " + currentHealth);
+        if (currentHealth > maxHealth) currentHealth = maxHealth; // Dùng maxHealth tổng
     }
 
     // Hàm để sử dụng năng lượng
@@ -80,11 +81,7 @@ public class PlayerStats : MonoBehaviour
     public void RestoreMana(int amount)
     {
         currentMana += amount;
-        if (currentMana > maxMana)
-        {
-            currentMana = maxMana;
-        }
-        Debug.Log("Player restored " + amount + " mana. Current Mana: " + currentMana);
+        if (currentMana > maxMana) currentMana = maxMana; // Dùng maxMana tổng
     }
     // Hàm để nhận tiền
     public void AddCoins(int amount)
@@ -109,22 +106,17 @@ public class PlayerStats : MonoBehaviour
     // Hàm xử lý việc lên cấp
     void LevelUp()
     {
-        playerLevel++; // Tăng level
-        currentExp -= expToNextLevel; // Trừ đi EXP đã dùng để lên cấp, giữ lại phần dư
+        playerLevel++;
+        currentExp -= expToNextLevel;
 
-        // Tăng chỉ số cho nhân vật
-        maxHealth += 20;
-        currentHealth = maxHealth; // Hồi đầy máu khi lên cấp
-        maxMana += 10;
-        currentMana = maxMana; // Hồi đầy năng lượng
+        baseMaxHealth += 20; // Chỉ tăng base
+        baseMaxMana += 10;   // Chỉ tăng base
+        // Bạn có thể tăng cả baseAttack, baseDefense... ở đây nếu muốn
+        currentHealth = maxHealth; // Hồi đầy dựa trên maxHealth mới
+        currentMana = maxMana;
 
-        // Tăng lượng EXP cần cho level tiếp theo (ví dụ: tăng 50%)
         expToNextLevel = (int)(expToNextLevel * 1.5f);
-
-        Debug.Log("<color=yellow>LEVEL UP! Reached Level " + playerLevel + "</color>");
-        // Sau này có thể thêm hiệu ứng lên cấp tại đây
     }
-    // Hàm để tiêu tiền, trả về true nếu thành công, false nếu không đủ tiền
     public bool SpendCoins(int amount)
     {
         if (coins >= amount)
@@ -144,5 +136,17 @@ public class PlayerStats : MonoBehaviour
     {
         attackBonus = attackMod;
         defenseBonus = defenseMod;
+    }
+    public void UpdateEquipmentBonuses(int hp, int mp, int atk, int def, float spd)
+    {
+        healthBonus = hp;
+        manaBonus = mp;
+        attackBonus = atk;
+        defenseBonus = def;
+        speedBonus = spd;
+
+        // Điều chỉnh máu/mana hiện tại nếu max thay đổi
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
+        currentMana = Mathf.Min(currentMana, maxMana);
     }
 }
