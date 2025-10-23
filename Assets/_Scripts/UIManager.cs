@@ -1,74 +1,129 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement; // Thêm thư viện SceneManagement
+using UnityEngine.SceneManagement;
+
+[RequireComponent(typeof(InventoryUI), typeof(SkillUIUpdater))]
 public class UIManager : MonoBehaviour
 {
-    // Các biến vẫn giữ nguyên
-    public PlayerStats playerStats;
-    public Slider healthBar;
-    public Slider manaBar;
-    public Slider expBar;
-    public TextMeshProUGUI levelText;
-    public TextMeshProUGUI coinText;
+    private Slider healthBar;
+    private Slider manaBar;
+    private Slider expBar;
+    private TextMeshProUGUI levelText;
+    private TextMeshProUGUI coinText;
 
-    // Thêm hàm OnEnable và OnDisable
-    private void OnEnable()
+    private PlayerStats playerStats;
+    private InventoryUI inventoryUI;
+    private SkillUIUpdater skillUIUpdater;
+
+    void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // Hàm này sẽ được gọi mỗi khi một scene mới được load xong
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        FindPlayerStats();
         FindUIElements();
+    }
+
+    void FindPlayerStats()
+    {
+        playerStats = FindObjectOfType<PlayerStats>();
+        if (playerStats == null && SceneManager.GetActiveScene().name != "LoginScene")
+        {
+            Debug.LogError("UIManager: Could not find PlayerStats in the scene!");
+        }
     }
 
     void FindUIElements()
     {
-        Debug.Log("UIManager is searching for UI elements in the new scene.");
-        // Tìm Canvas
+        if (SceneManager.GetActiveScene().name == "LoginScene") return;
+
         Canvas canvas = FindObjectOfType<Canvas>();
         if (canvas == null)
         {
-            Debug.LogError("Could not find a Canvas in the new scene!");
+            Debug.LogError("UIManager: Could not find a Canvas in this scene! UI will not work.");
             return;
         }
 
-        // Tìm các thành phần UI bằng tên của chúng bên trong Canvas
-        // Đảm bảo tên các đối tượng UI của bạn trong Hierarchy là chính xác
-        healthBar = canvas.transform.Find("HealthBar").GetComponent<Slider>();
-        manaBar = canvas.transform.Find("ManaBar").GetComponent<Slider>();
-        expBar = canvas.transform.Find("ExpBar").GetComponent<Slider>();
-        levelText = canvas.transform.Find("LevelText").GetComponent<TextMeshProUGUI>();
-        coinText = canvas.transform.Find("CoinText").GetComponent<TextMeshProUGUI>();
+        // --- SỬA LỖI Ở CÁC DÒNG GỌI HÀM DƯỚI ĐÂY ---
+        // Phải truyền vào canvas.transform thay vì chỉ canvas
+        healthBar = FindUIComponent<Slider>(canvas.transform, "HealthBar");
+        manaBar = FindUIComponent<Slider>(canvas.transform, "ManaBar");
+        expBar = FindUIComponent<Slider>(canvas.transform, "ExpBar");
+        levelText = FindUIComponent<TextMeshProUGUI>(canvas.transform, "LevelText");
 
-        // Tìm PlayerStats (có thể nó cũng cần được tìm lại)
-        playerStats = FindObjectOfType<PlayerStats>();
+        Transform coinGroup = canvas.transform.Find("CoinDisplayGroup");
+        if (coinGroup != null)
+        {
+            // Phải truyền vào coinGroup (là Transform)
+            coinText = FindUIComponent<TextMeshProUGUI>(coinGroup, "CoinText");
+        } else {
+             Debug.LogError("UIManager: Could not find 'CoinDisplayGroup' in Canvas!");
+        }
+        // --- KẾT THÚC SỬA LỖI ---
+
+        inventoryUI = GetComponent<InventoryUI>();
+        skillUIUpdater = GetComponent<SkillUIUpdater>();
+
+        UpdateBaseUI();
+    }
+
+    // Hàm tiện ích (giữ nguyên)
+    T FindUIComponent<T>(Transform parent, string name) where T : Component
+    {
+        Transform element = parent.Find(name);
+        if (element == null)
+        {
+            Debug.LogError($"UIManager: Could not find UI element named '{name}' under '{parent.name}'!");
+            return null;
+        }
+        T component = element.GetComponent<T>();
+        if (component == null)
+        {
+            Debug.LogError($"UIManager: UI element '{name}' does not have the required component '{typeof(T).Name}'!");
+        }
+        return component;
     }
 
     void Update()
     {
-        // Code cập nhật UI giữ nguyên
-        if (playerStats != null && healthBar != null && manaBar != null)
+        if (playerStats != null)
+        {
+            UpdateBaseUI();
+        }
+    }
+
+    void UpdateBaseUI()
+    {
+        if (healthBar != null)
         {
             healthBar.maxValue = playerStats.maxHealth;
             healthBar.value = playerStats.currentHealth;
+        }
+        if (manaBar != null)
+        {
             manaBar.maxValue = playerStats.maxMana;
             manaBar.value = playerStats.currentMana;
         }
-
-        if (playerStats != null && expBar != null && levelText != null && coinText != null)
+        if (expBar != null)
         {
             expBar.maxValue = playerStats.expToNextLevel;
             expBar.value = playerStats.currentExp;
+        }
+        if (levelText != null)
+        {
             levelText.text = "Level: " + playerStats.playerLevel;
-            coinText.text = "Coins: " + playerStats.coins.ToString();
+        }
+        if (coinText != null)
+        {
+            coinText.text = playerStats.coins.ToString();
         }
     }
 }

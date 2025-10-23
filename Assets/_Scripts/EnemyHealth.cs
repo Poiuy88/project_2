@@ -1,22 +1,25 @@
-using System.Collections; // Cần thiết để sử dụng Coroutine
+using System.Collections;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    [Header("Stats")]
+    public int level = 1; // Cấp độ của quái vật
     public int maxHealth = 30;
-    public int currentHealth; // << Sửa lại để có thể truy cập từ script khác (nếu cần)
+    public int currentHealth;
 
     [Header("Rewards")]
     public int expValue = 25;
-    public int coinValue = 10;
+    // public int coinValue = 10; // << Không cần biến này nữa
+    public GameObject coinPrefab; // Prefab đồng xu rơi ra
 
     [Header("Respawn Settings")]
-    public float respawnTime = 10f; // Thời gian chờ để hồi sinh (10 giây)
-    private Vector3 startPosition; // Vị trí ban đầu
-    private Quaternion startRotation; // Hướng ban đầu
-    private Vector3 startScale; // Kích thước ban đầu
+    public float respawnTime = 10f;
+    private Vector3 startPosition;
+    private Quaternion startRotation;
+    private Vector3 startScale;
 
-    // Mảng để lưu trữ tất cả các component cần bật/tắt
+    // Các component cần quản lý
     private Behaviour[] componentsToDisable;
     private Renderer monsterRenderer;
     private Collider2D[] colliders;
@@ -24,21 +27,18 @@ public class EnemyHealth : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        // Lưu lại trạng thái ban đầu khi game bắt đầu
         startPosition = transform.position;
         startRotation = transform.rotation;
         startScale = transform.localScale;
 
-        // Tự động tìm tất cả các component cần thiết
         monsterRenderer = GetComponent<Renderer>();
         colliders = GetComponents<Collider2D>();
-        // Tìm các script AI như AggroAI, EnemyPatrol
-        componentsToDisable = GetComponents<Behaviour>(); 
+        // Lấy tất cả các script có thể bật/tắt (bao gồm AI, Damage...)
+        componentsToDisable = GetComponents<Behaviour>();
     }
 
     public void TakeDamage(int damage)
     {
-        // Không nhận sát thương nếu đã "chết"
         if (currentHealth <= 0) return;
 
         currentHealth -= damage;
@@ -54,60 +54,84 @@ public class EnemyHealth : MonoBehaviour
     {
         Debug.Log(gameObject.name + " died!");
 
-        // Trao thưởng cho người chơi
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             PlayerStats playerStats = player.GetComponent<PlayerStats>();
             if (playerStats != null)
             {
+                // Chỉ trao EXP trực tiếp
                 playerStats.AddExperience(expValue);
-                playerStats.AddCoins(coinValue);
+
+                // --- LOGIC RƠI COIN MỚI ---
+                float dropChance = 0.5f; // Tỷ lệ rơi 50%
+                if (Random.value <= dropChance && coinPrefab != null) // Thêm kiểm tra coinPrefab != null
+                {
+                    int coinsToDrop = Random.Range(5 * level, 10 * level + 1);
+                    if (coinsToDrop > 0) // Chỉ tạo coin nếu số lượng lớn hơn 0
+                    {
+                        GameObject coinGO = Instantiate(coinPrefab, transform.position, Quaternion.identity);
+                        CoinPickup coinScript = coinGO.GetComponent<CoinPickup>();
+                        if (coinScript != null)
+                        {
+                            coinScript.coinValue = coinsToDrop;
+                            Debug.Log($"Dropped {coinsToDrop} coins!");
+                        }
+                        else
+                        {
+                            Debug.LogError("Coin Prefab is missing CoinPickup script!", coinGO);
+                            Destroy(coinGO); // Hủy coin nếu prefab bị lỗi
+                        }
+                    }
+                }
+                // --- KẾT THÚC LOGIC RƠI COIN ---
             }
         }
 
-        // Bắt đầu quá trình hồi sinh
-        StartCoroutine(RespawnCoroutine());
+        // Bắt đầu hồi sinh
+        StartCoroutine(RespawnCoroutine()); // << Dòng gây lỗi của bạn sẽ hoạt động lại
     }
-    // Coroutine để xử lý việc hồi sinh
+
+    // --- CÁC HÀM HỒI SINH (BỊ THIẾU TRƯỚC ĐÂY) ---
     IEnumerator RespawnCoroutine()
     {
-        // 1. "Vô hiệu hóa" quái vật (làm cho nó biến mất)
+        // Ẩn thanh máu ngay lập tức
+        EnemyUIController uiController = GetComponent<EnemyUIController>();
+        if (uiController != null)
+        {
+            uiController.HideHealthBarInstantly();
+        }
+
+        // Vô hiệu hóa quái vật
         SetMonsterActive(false);
 
-        // 2. Chờ đợi trong một khoảng thời gian
+        // Chờ đợi
         yield return new WaitForSeconds(respawnTime);
 
-        // 3. "Hồi sinh" quái vật
+        // Hồi sinh
         Debug.Log("Respawning " + gameObject.name);
         transform.position = startPosition;
         transform.rotation = startRotation;
         transform.localScale = startScale;
         currentHealth = maxHealth;
 
-        // 4. Kích hoạt lại quái vật
+        // Kích hoạt lại
         SetMonsterActive(true);
     }
-    // Hàm tiện ích để bật/tắt các bộ phận của quái vật
+
     void SetMonsterActive(bool isActive)
     {
-        // Bật/tắt hình ảnh
         if (monsterRenderer != null) monsterRenderer.enabled = isActive;
-        
-        // Bật/tắt tất cả các collider
-        foreach (Collider2D col in colliders)
-        {
-            col.enabled = isActive;
-        }
+        foreach (Collider2D col in colliders) { col.enabled = isActive; }
 
-        // Bật/tắt tất cả các script (bao gồm cả AI, Health, Damage...)
-        // Chúng ta trừ 1 để không tắt chính script EnemyHealth này
-        for (int i = 0; i < componentsToDisable.Length; i++)
+        // Bật/tắt tất cả các script trừ script này
+        foreach(Behaviour comp in componentsToDisable)
         {
-            if (componentsToDisable[i] != this) // Không tắt chính mình
+            if (comp != this) // Đảm bảo không tắt chính script EnemyHealth
             {
-                 componentsToDisable[i].enabled = isActive;
+                 comp.enabled = isActive;
             }
         }
     }
+    // --- KẾT THÚC CÁC HÀM HỒI SINH ---
 }
