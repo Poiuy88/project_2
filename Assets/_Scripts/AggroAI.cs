@@ -7,27 +7,32 @@ public class AggroAI : MonoBehaviour
     public float patrolSpeed = 1.5f;
     public float patrolDistance = 4f;
     public float jumpForce = 8f; // Lực nhảy của quái vật
+    
 
     [Header("Detection Points")]
-    public Transform groundCheck;
-    public Transform wallCheck; // Điểm dò tường mới
-    public float checkRadius = 0.1f;
+    // public Transform groundCheck; // << Không cần biến Transform này nữa
+    public Transform wallCheck;
+    // public float checkRadius = 0.1f; // << Biến này không dùng cho Raycast
     public LayerMask whatIsGround;
+
+    // --- THÔNG SỐ RAYCAST MỚI ---
+    public float groundCheckDistance = 0.5f; // Độ dài tia dò đất
+    public Vector2 groundCheckOffset; // Vị trí tia dò đất
+    // --- KẾT THÚC THÔNG SỐ RAYCAST ---
 
     private bool isGrounded;
     private bool isTouchingWall;
 
-    private enum AIState { Patrolling, Chasing, Returning }
+    public enum AIState { Patrolling, Chasing, Returning }
     private AIState currentState = AIState.Patrolling;
 
     private Transform playerTarget;
     private Vector3 startPosition;
-    private Vector3 leftPatrollingPoint, rightPatrollingPoint;
+    private Vector3 leftPatrolPoint, rightPatrolPoint;
     private bool movingRight = true;
-    
-    // --- BIẾN MỚI ĐỂ XỬ LÝ KẸT ---
-    private float timeStuck = 0f; // Thời gian đã bị kẹt
-    private Vector3 lastPosition; // Vị trí ở frame trước
+
+    private float timeStuck = 0f;
+    private Vector3 lastPosition;
 
     private Rigidbody2D rb;
     private Transform spriteTransform;
@@ -38,155 +43,131 @@ public class AggroAI : MonoBehaviour
         spriteTransform = transform;
         startPosition = transform.position;
         lastPosition = transform.position;
-
-        leftPatrollingPoint = startPosition - new Vector3(patrolDistance, 0, 0);
-        rightPatrollingPoint = startPosition + new Vector3(patrolDistance, 0, 0);
+        leftPatrolPoint = startPosition - new Vector3(patrolDistance, 0, 0);
+        rightPatrolPoint = startPosition + new Vector3(patrolDistance, 0, 0);
     }
         
     void FixedUpdate()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
-        isTouchingWall = Physics2D.OverlapCircle(wallCheck.position, checkRadius, whatIsGround);
+        // --- SỬ DỤNG RAYCAST ---
+        Vector2 raycastOrigin = (Vector2)transform.position + groundCheckOffset;
+        RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, Vector2.down, groundCheckDistance, whatIsGround);
+        isGrounded = hit.collider != null;
+        // --- KẾT THÚC RAYCAST ---
 
-        // --- Logic AI chính ---
+        isTouchingWall = Physics2D.OverlapCircle(wallCheck.position, 0.05f, whatIsGround); // Giữ nguyên kiểm tra tường
+
         switch (currentState)
         {
-            case AIState.Patrolling:
-                Patrol();
-                break;
-            case AIState.Chasing:
-                ChasePlayer();
-                break;
-            case AIState.Returning:
-                ReturnToStart();
-                break;
+            case AIState.Patrolling: Patrol(); break;
+            case AIState.Chasing: ChasePlayer(); break;
+            case AIState.Returning: ReturnToStart(); break;
         }
     }
 
     void Patrol()
     {
-        // 1. Kiểm tra xem có bị kẹt không
-        if (Vector2.Distance(transform.position, lastPosition) < 0.01f)
-        {
-            timeStuck += Time.fixedDeltaTime;
-        }
-        else
-        {
-            timeStuck = 0;
-            lastPosition = transform.position;
-        }
+        // 1. Kiểm tra kẹt
+        if (Vector2.Distance(transform.position, lastPosition) < 0.01f) { timeStuck += Time.fixedDeltaTime; }
+        else { timeStuck = 0; lastPosition = transform.position; }
 
-        // 2. Nếu bị kẹt quá 1 giây hoặc gặp tường, hãy thử nhảy
+        // 2. Xử lý kẹt hoặc gặp tường
         if (timeStuck > 1f || isTouchingWall)
         {
-            if (isGrounded)
-            {
-                Jump();
-            }
-            // Nếu nhảy mà vẫn kẹt, thì quay đầu
-            if(timeStuck > 1.5f)
-            {
-                movingRight = !movingRight;
-                Flip();
-                timeStuck = 0;
-            }
-        }
-        
-        // 3. Nếu sắp rơi xuống vực, quay đầu
-        if (!isGrounded && currentState == AIState.Patrolling)
-        {
-            movingRight = !movingRight;
-            Flip();
+            if (isGrounded) Jump();
+            if(timeStuck > 1.5f) { movingRight = !movingRight; Flip(); timeStuck = 0; }
         }
 
-        // 4. Di chuyển tuần tra
+        // 3. Xử lý sắp rơi
+        if (!isGrounded && currentState == AIState.Patrolling) { movingRight = !movingRight; Flip(); }
+
+        // 4. Di chuyển
         float targetSpeed = movingRight ? patrolSpeed : -patrolSpeed;
-        rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+        // Chỉ di chuyển nếu có đất hoặc đang không bị kẹt nghiêm trọng (để cho phép nhảy qua)
+        if(isGrounded || timeStuck < 1.5f) rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+        else rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Dừng lại nếu không có đất và đang không xử lý kẹt
 
-        // 5. Kiểm tra để quay đầu ở cuối đường tuần tra
-        if ((movingRight && transform.position.x >= rightPatrollingPoint.x) || 
-            (!movingRight && transform.position.x <= leftPatrollingPoint.x))
-        {
-            movingRight = !movingRight;
-            Flip();
-        }
+
+        // 5. Quay đầu cuối đường
+        if ((movingRight && transform.position.x >= rightPatrolPoint.x) || (!movingRight && transform.position.x <= leftPatrolPoint.x))
+        { movingRight = !movingRight; Flip(); }
     }
 
     void ChasePlayer()
     {
-        if (playerTarget == null)
-        {
-            currentState = AIState.Returning;
-            return;
-        }
+        if (playerTarget == null) { currentState = AIState.Returning; return; }
+        if ((isTouchingWall || !isGrounded) && rb.linearVelocity.y == 0) Jump();
 
-        // Nếu gặp tường hoặc sắp rơi, nhảy lên để đuổi theo
-        if ((isTouchingWall || !isGrounded) && rb.linearVelocity.y == 0)
-        {
-            Jump();
-        }
-
-        // Di chuyển về phía người chơi
         float direction = playerTarget.position.x > transform.position.x ? 1 : -1;
-        rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
+         // Chỉ di chuyển nếu có đất hoặc đang không ở trên không (để cho phép nhảy đuổi theo)
+        if(isGrounded || rb.linearVelocity.y != 0) rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
+        else rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Dừng lại nếu sắp rơi
+
         FlipTowards(playerTarget.position);
     }
-
     void ReturnToStart()
     {
-        // Logic quay về vị trí cũ (có thể nâng cấp tương tự)
-        float direction = startPosition.x > transform.position.x ? 1 : -1;
-        rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
-        FlipTowards(startPosition);
-
-        if (Vector2.Distance(transform.position, startPosition) < 0.5f)
+        if (isGrounded || rb.linearVelocity.y != 0) // Cho phép nhảy về nếu cần
         {
-            currentState = AIState.Patrolling;
+            float direction = startPosition.x > transform.position.x ? 1 : -1;
+            rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
+            FlipTowards(startPosition);
+             // Nhảy nếu gặp tường khi quay về
+            if (isTouchingWall && isGrounded) Jump();
         }
+        else { rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); }
+
+
+        if (Vector2.Distance(new Vector2(transform.position.x, 0), new Vector2(startPosition.x, 0)) < 0.5f) // Chỉ kiểm tra khoảng cách X
+        { currentState = AIState.Patrolling; }
     }
     void Jump()
     {
-        rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+        if (isGrounded) rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse); 
     }
     // --- CÁC HÀM PHỤ TRỢ ---
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerTarget = other.transform;
-            currentState = AIState.Chasing;
-        }
+        if (other.CompareTag("Player")) { playerTarget = other.transform; currentState = AIState.Chasing; } 
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
-        {
-            playerTarget = null;
-            currentState = AIState.Returning;
-        }
+        if (other.CompareTag("Player")) { playerTarget = null; currentState = AIState.Returning; } 
     }
 
     // Hàm lật hướng tự động khi tuần tra
     void Flip()
-    {
-        Vector3 scaler = spriteTransform.localScale;
-        scaler.x *= -1;
-        spriteTransform.localScale = scaler;
+    { 
+        Vector3 scaler = spriteTransform.localScale; scaler.x *= -1; spriteTransform.localScale = scaler; 
     }
 
     // Hàm lật hướng theo mục tiêu
     void FlipTowards(Vector3 targetPosition)
     {
-        if (transform.position.x < targetPosition.x)
+        if (transform.position.x < targetPosition.x && spriteTransform.localScale.x < 0) Flip();
+        else if (transform.position.x > targetPosition.x && spriteTransform.localScale.x > 0) Flip();
+    }
+    public AIState GetCurrentState()
+    {
+        return currentState;
+    }
+    public Transform GetPlayerTarget()
+    {
+        return playerTarget;
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Vector2 raycastOrigin = (Vector2)transform.position + groundCheckOffset;
+        Gizmos.DrawLine(raycastOrigin, raycastOrigin + Vector2.down * groundCheckDistance);
+
+         if(wallCheck != null)
         {
-            spriteTransform.localScale = new Vector3(Mathf.Abs(spriteTransform.localScale.x), spriteTransform.localScale.y, spriteTransform.localScale.z);
-        }
-        else if (transform.position.x > targetPosition.x)
-        {
-            spriteTransform.localScale = new Vector3(-Mathf.Abs(spriteTransform.localScale.x), spriteTransform.localScale.y, spriteTransform.localScale.z);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(wallCheck.position, 0.1f);
         }
     }
-    
+           
 }

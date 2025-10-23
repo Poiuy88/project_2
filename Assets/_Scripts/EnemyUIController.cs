@@ -9,7 +9,7 @@ public class EnemyUIController : MonoBehaviour
 
     private Image healthBarFill;
     private TextMeshProUGUI healthText;
-    // private TextMeshProUGUI levelText;
+    private TextMeshProUGUI levelText;
     private EnemyHealth enemyHealth;
     private Transform healthBarInstance;
     private Canvas healthBarCanvas;
@@ -22,14 +22,27 @@ public class EnemyUIController : MonoBehaviour
         GameObject hbInstance = Instantiate(healthBarPrefab, transform.position + offset, Quaternion.identity, transform);
         healthBarInstance = hbInstance.transform;
         healthBarCanvas = hbInstance.GetComponent<Canvas>();
+        initialHealthBarScale = healthBarInstance.localScale;
 
-        initialHealthBarScale = healthBarInstance.localScale; // << Lưu lại scale gốc
-
-        // ... (Code tìm Fill và Text giữ nguyên) ...
+        // Tìm thanh fill và health text (như cũ)
         Transform fillTransform = healthBarInstance.Find("HealthBarBackground/HealthBarFill");
         if (fillTransform != null) healthBarFill = fillTransform.GetComponent<Image>();
-        Transform textTransform = healthBarInstance.Find("HealthBarBackground/HealthText");
-        if (textTransform != null) healthText = textTransform.GetComponent<TextMeshProUGUI>();
+        Transform healthTextTransform = healthBarInstance.Find("HealthBarBackground/HealthText");
+        if (healthTextTransform != null) healthText = healthTextTransform.GetComponent<TextMeshProUGUI>();
+
+        // --- TÌM VÀ CẬP NHẬT LEVEL TEXT ---
+        Transform levelTextTransform = healthBarInstance.Find("LevelText"); // << TÌM LEVEL TEXT
+        if (levelTextTransform != null)
+        {
+            levelText = levelTextTransform.GetComponent<TextMeshProUGUI>();
+            // Cập nhật nội dung Text ngay khi tìm thấy
+            levelText.text = "Lv. " + enemyHealth.level; // << CẬP NHẬT LEVEL
+        }
+        else
+        {
+            Debug.LogWarning("Could not find 'LevelText' inside the health bar prefab!", healthBarInstance.gameObject);
+        }
+        // --- KẾT THÚC TÌM VÀ CẬP NHẬT ---
 
         if (healthBarCanvas != null) healthBarCanvas.sortingOrder = 10;
         UpdateHealthBar();
@@ -38,22 +51,14 @@ public class EnemyUIController : MonoBehaviour
     void Update()
     {
         UpdateHealthBar();
-
-        // --- LOGIC CHỐNG LẬT MỚI ---
+        // Logic chống lật (giữ nguyên)
         if (healthBarInstance != null)
         {
-            // Kiểm tra xem scale X của cha (quái vật) có bị âm không
-            if (transform.localScale.x < 0)
-            {
-                // Nếu cha bị lật, lật ngược lại thanh máu
-                healthBarInstance.localScale = new Vector3(-initialHealthBarScale.x, initialHealthBarScale.y, initialHealthBarScale.z);
-            }
-            else
-            {
-                // Nếu cha không bị lật, giữ nguyên scale gốc của thanh máu
-                healthBarInstance.localScale = initialHealthBarScale;
-            }
+            if (transform.localScale.x < 0) healthBarInstance.localScale = new Vector3(-initialHealthBarScale.x, initialHealthBarScale.y, initialHealthBarScale.z);
+            else healthBarInstance.localScale = initialHealthBarScale;
         }
+        // Logic xoay camera (giữ nguyên)
+        // if(healthBarInstance != null && Camera.main != null) { /*...*/ }
     }
 
     void UpdateHealthBar()
