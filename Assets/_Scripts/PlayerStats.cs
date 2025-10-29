@@ -117,7 +117,8 @@ public class PlayerStats : MonoBehaviour
 
         baseMaxHealth += 20; // Chỉ tăng base
         baseMaxMana += 10;   // Chỉ tăng base
-        // Bạn có thể tăng cả baseAttack, baseDefense... ở đây nếu muốn
+        baseAttack += 2;
+        baseDefense += 1;
         currentHealth = maxHealth; // Hồi đầy dựa trên maxHealth mới
         currentMana = maxMana;
 

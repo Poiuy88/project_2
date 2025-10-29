@@ -307,13 +307,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a69d87ccbf5574a9ec8841cc60142e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
   jumpForce: 8
   groundCheck: {fileID: 6849376372825981649}
   checkRadius: 0.4
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
+  footOffset: 0.3
 --- !u!95 &7858214412180426433
 Animator:
   serializedVersion: 7
@@ -360,16 +360,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ddf4d100616c94ead97d0c9ab9cc27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  maxMana: 50
+  baseMoveSpeed: 5
+  baseMaxHealth: 100
+  baseMaxMana: 50
   baseAttack: 5
   baseDefense: 0
+  currentHealth: 0
+  currentMana: 0
   playerLevel: 1
   currentExp: 0
   expToNextLevel: 100
   coins: 0
-  currentHealth: 0
-  currentMana: 0
 --- !u!114 &9007275159134404036
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4198,6 +4198,11 @@ PrefabInstance:
       propertyPath: baseMaxMana
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 5349788434726000994, guid: ded598a0b4a0fb94a8a48c5e3e8de897,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.42
+      objectReference: {fileID: 0}
     - target: {fileID: 5809776438272018806, guid: ded598a0b4a0fb94a8a48c5e3e8de897,
         type: 3}
       propertyPath: m_BodyType
