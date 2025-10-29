@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerStats : MonoBehaviour
     [Header("Live Stats")]
     public int currentHealth;
     public int currentMana;
+    private bool isDead = false;
 
     // Các thuộc tính (Getter) để lấy chỉ số tổng cuối cùng
     public int maxHealth { get { return baseMaxHealth + healthBonus; } }
@@ -57,6 +59,10 @@ public class PlayerStats : MonoBehaviour
 
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
+        if (currentHealth <= 0 && !isDead)
+        {
+            Die();
+        }
     }
 
     // Hàm để hồi máu
@@ -148,5 +154,28 @@ public class PlayerStats : MonoBehaviour
         // Điều chỉnh máu/mana hiện tại nếu max thay đổi
         currentHealth = Mathf.Min(currentHealth, maxHealth);
         currentMana = Mathf.Min(currentMana, maxMana);
+    }
+    void Die()
+    {
+        isDead = true; // Đánh dấu là đã chết để tránh gọi hàm này 2 lần
+        Debug.Log("Player has died. Respawning at VillageMap.");
+
+        // 1. Đặt tên điểm hồi sinh mà PlayerController sẽ tìm kiếm
+        // (Chúng ta sẽ tạo đối tượng này ở Bước 3)
+        GameManager.nextSpawnPointName = "SpawnPoint_FromDeath";
+
+        // 2. Tải lại cảnh ngôi làng
+        SceneManager.LoadScene("VillageMap");
+    }
+    public void ResetPlayerStateAfterDeath()
+    {
+        // 1. Hồi đầy máu và mana
+        currentHealth = maxHealth;
+        currentMana = maxMana;
+
+        // 2. Reset cờ 'isDead' để người chơi có thể chết lần nữa
+        isDead = false;
+
+        Debug.Log("Player state has been reset after respawning.");
     }
 }

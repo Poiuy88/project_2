@@ -1,17 +1,20 @@
 using UnityEngine;
-using UnityEngine.UI; // Thư viện này có thể cần nếu bạn dùng các component UI khác
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class InventoryUI : MonoBehaviour
 {
-    // Các biến public để kéo thả trong Inspector
-    public GameObject inventoryPanel;
-    public Transform slotHolder;
+    // --- SỬA ĐỔI: Chuyển các tham chiếu Scene sang private ---
+    private GameObject inventoryPanel;
+    private Transform slotHolder;
+    // --------------------------------------------------------
+
+    // GIỮ LẠI: Prefab này được kéo từ Project nên sẽ không bị mất
     public GameObject slotPrefab;
 
     private PlayerInventory inventory;
 
-    // Đăng ký và hủy đăng ký sự kiện
+    // Đăng ký và hủy đăng ký sự kiện (Giữ nguyên)
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -22,36 +25,64 @@ public class InventoryUI : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // Hàm được gọi mỗi khi scene mới tải xong
+    // --- HÀM NÀY ĐƯỢC NÂNG CẤP HOÀN TOÀN ---
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Khi vào scene mới, luôn tìm lại PlayerInventory
-        // và đăng ký lại sự kiện để đảm bảo kết nối
+        // Bỏ qua nếu ở màn Login
+        if (scene.name == "LoginScene") return;
+
+        // 1. Tìm PlayerInventory (như cũ)
         if (inventory == null)
         {
             inventory = PlayerInventory.instance;
         }
-        
-        // Hủy đăng ký cũ (nếu có) và đăng ký lại
+
+        // 2. Tìm các thành phần UI trong Scene mới
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas != null)
+        {
+            // Tìm InventoryPanel (phải khớp tên)
+            Transform panelTransform = canvas.transform.Find("InventoryPanel");
+            if (panelTransform != null)
+            {
+                inventoryPanel = panelTransform.gameObject;
+
+                // Tìm SlotHolder (khung chứa slot) BÊN TRONG InventoryPanel
+                slotHolder = inventoryPanel.transform.Find("SlotHolder"); // <-- Tên này phải khớp
+                if (slotHolder == null)
+                {
+                    Debug.LogError("InventoryUI: Không tìm thấy 'SlotHolder' bên trong 'InventoryPanel'!");
+                }
+            }
+            else
+            {
+                Debug.LogError("InventoryUI: Không tìm thấy 'InventoryPanel' trong Canvas!");
+            }
+        }
+        else
+        {
+            Debug.LogError("InventoryUI: Không tìm thấy Canvas!");
+        }
+
+
+        // 3. Đăng ký sự kiện (như cũ)
         inventory.onInventoryChangedCallback -= UpdateUI;
         inventory.onInventoryChangedCallback += UpdateUI;
 
-        // Cập nhật lại UI ngay khi vào scene mới
+        // 4. Cập nhật UI ngay lập tức
         UpdateUI();
     }
+    // --- KẾT THÚC NÂNG CẤP ---
 
 
-    void Update()
-    {
-        
-    }
-
+    // Hàm UpdateUI() không cần sửa, nhưng hãy đảm bảo bạn có kiểm tra null
     void UpdateUI()
     {
         // Kiểm tra để đảm bảo các tham chiếu không bị rỗng
+        // Giờ đây slotHolder sẽ được tìm thấy
         if (slotHolder == null || slotPrefab == null || inventory == null)
         {
-            // In ra một cảnh báo nếu có gì đó bị thiếu
+            // Lỗi này vẫn có thể xuất hiện nếu tên trong Hierarchy của bạn không khớp
             Debug.LogWarning("InventoryUI is missing references (SlotHolder, SlotPrefab, or Inventory). UI cannot be updated.");
             return;
         }

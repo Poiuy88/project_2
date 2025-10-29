@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour
             }
             GameManager.nextSpawnPointName = null;
         }
+        playerStats.ResetPlayerStateAfterDeath();
     }
 
 
