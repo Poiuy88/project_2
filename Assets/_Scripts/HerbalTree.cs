@@ -5,6 +5,8 @@ public class HerbalTree : MonoBehaviour
 {
     public GameObject interactionPrompt; // Biến để kéo thả UI Text vào
     public float cooldownTime = 10f; // Thời gian hồi, 10 giây để test (bạn có thể đổi thành 300f cho 5 phút)
+    [Header("Harvest Settings")]
+    public int harvestQuantity = 1;
 
     private bool playerInRange = false; // Kiểm tra xem người chơi có ở trong vùng không
     private float nextHarvestTime = 0f; // Mốc thời gian có thể thu hoạch lần tiếp theo
@@ -43,8 +45,17 @@ public class HerbalTree : MonoBehaviour
 
         if (playerInventory != null && herbalFruitData != null)
         {
-            // Gọi hàm AddItem mới
-            playerInventory.AddItem(herbalFruitData);
+            // --- SỬA ĐỔI LOGIC ---
+            // Thay vì gọi 1 lần, chúng ta dùng vòng lặp for
+            // để gọi hàm AddItem nhiều lần
+            for (int i = 0; i < harvestQuantity; i++)
+            {
+                playerInventory.AddItem(herbalFruitData);
+            }
+            
+            // Thêm một dòng log để xác nhận
+            Debug.Log($"Đã thu hoạch {harvestQuantity} x {herbalFruitData.itemName}");
+            // --- KẾT THÚC SỬA ĐỔI ---
         }
 
         interactionPrompt.SetActive(false);

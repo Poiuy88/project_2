@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 5424922192639347549}
   - component: {fileID: 8656178699537065497}
   - component: {fileID: 3490781722878522891}
-  - component: {fileID: 1991509739610647437}
+  - component: {fileID: 8535516482784552425}
+  - component: {fileID: 8305175943974911166}
   m_Layer: 0
   m_Name: Bat
   m_TagString: Enemy
@@ -118,7 +119,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &5424922192639347549
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -153,8 +154,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.285
+  m_Offset: {x: 0, y: 0.054990258}
+  m_Radius: 0.23000972
 --- !u!114 &8656178699537065497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,9 +168,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8b971aab5f3934d847f62a9bc1a936, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 6
+  maxHealth: 300
+  currentHealth: 0
   expValue: 50
-  coinValue: 30
-  maxHealth: 100
+  coinPrefab: {fileID: 3288311925577276711, guid: 8e288083387dc95418370380930bb1bd,
+    type: 3}
+  respawnTime: 10
 --- !u!114 &3490781722878522891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,9 +187,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77c6bb86b9d5834c8f621aca5c5be1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageAmount: 20
+  damageAmount: 60
   damageCooldown: 1.5
---- !u!114 &1991509739610647437
+--- !u!114 &8535516482784552425
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -193,8 +198,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 779912427447060543}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f2df561023c8d84dbcde904ba36e7cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 95989ddbff8e95249a2a1ba5aaa0d6a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
-  patrolDistance: 3
+  healthBarPrefab: {fileID: 2220765231705635607, guid: c551f4dd48e5f4e40b20de71a9dc4bde,
+    type: 3}
+  offset: {x: 0, y: 1, z: 0}
+--- !u!114 &8305175943974911166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779912427447060543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f86d268e2042c46b239e2269c2faef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 4
+  patrolSpeed: 2
+  patrolDistance: 2
+  detectRadius: 2
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 1048576

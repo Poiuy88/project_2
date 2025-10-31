@@ -7,6 +7,10 @@ public class PlayerSkills : MonoBehaviour
     public Transform firePoint;
     public int manaCost = 15;
     public float fireballCooldown = 5f; // Thời gian hồi chiêu
+    [Header("Sound Effect")]
+    public AudioClip castSound; // Âm thanh khi tung chiêu
+    
+    private AudioSource audioSource;
 
     // Biến private để theo dõi thời gian hồi chiêu
     private float currentCooldown = 0f;
@@ -18,6 +22,7 @@ public class PlayerSkills : MonoBehaviour
     {
         playerStats = GetComponent<PlayerStats>();
         playerController = GetComponent<PlayerController>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -41,6 +46,10 @@ public class PlayerSkills : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle);
 
             Instantiate(fireballPrefab, firePoint.position, rotation);
+            if (audioSource != null && castSound != null)
+            {
+                audioSource.PlayOneShot(castSound);
+            }
 
             // Đặt lại thời gian hồi chiêu
             currentCooldown = fireballCooldown;

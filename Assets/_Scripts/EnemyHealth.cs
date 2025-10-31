@@ -7,6 +7,9 @@ public class EnemyHealth : MonoBehaviour
     public int level = 1; // Cấp độ của quái vật
     public int maxHealth = 30;
     public int currentHealth;
+    [Header("Cooldown")]
+    public float hitCooldown = 0.5f; // Thời gian "bất tử" sau khi bị đánh
+    private float lastHitTime;
 
     [Header("Rewards")]
     public int expValue = 25;
@@ -39,7 +42,12 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (Time.time < lastHitTime + hitCooldown)
+        {
+            return; // Nếu chưa, không nhận sát thương
+        }
         if (currentHealth <= 0) return;
+        lastHitTime = Time.time;
 
         currentHealth -= damage;
         Debug.Log(gameObject.name + " took " + damage + " damage. Current health: " + currentHealth);

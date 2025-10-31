@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinValue: 1
+  pickupSound: {fileID: 8300000, guid: 14596e0f0e40a184e992cc24cab1458f, type: 3}
 --- !u!58 &6820262353559528544
 CircleCollider2D:
   m_ObjectHideFlags: 0

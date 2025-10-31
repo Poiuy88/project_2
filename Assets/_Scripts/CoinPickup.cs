@@ -3,6 +3,8 @@ using UnityEngine;
 public class CoinPickup : MonoBehaviour
 {
     public int coinValue = 1;
+    [Header("Sound Effect")]
+    public AudioClip pickupSound;
 
     // Đảm bảo hàm này là OnTriggerEnter2D
     private void OnTriggerEnter2D(Collider2D other)
@@ -18,7 +20,12 @@ public class CoinPickup : MonoBehaviour
             }
             else
             {
-                 Debug.LogError("Could not find PlayerStats on the player object!");
+                Debug.LogError("Could not find PlayerStats on the player object!");
+            }
+            if (pickupSound != null)
+            {
+                // PlayClipAtPoint sẽ tự tạo 1 AudioSource tạm thời, phát âm thanh và tự hủy
+                AudioSource.PlayClipAtPoint(pickupSound, transform.position);
             }
             Destroy(gameObject);
         }

@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
-  patrolDistance: 2
+  patrolDistance: 1
   groundCheck: {fileID: 1923968225103410853}
   whatIsGround:
     serializedVersion: 2
@@ -292,7 +292,8 @@ MonoBehaviour:
   level: 1
   maxHealth: 50
   currentHealth: 0
-  expValue: 250
+  hitCooldown: 0.5
+  expValue: 15
   coinPrefab: {fileID: 3288311925577276711, guid: 8e288083387dc95418370380930bb1bd,
     type: 3}
   respawnTime: 10

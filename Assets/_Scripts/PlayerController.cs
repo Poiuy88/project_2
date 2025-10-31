@@ -1,6 +1,5 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // << THÊM THƯ VIỆN NÀY
-
+using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     // --- CÁC BIẾN CỦA BẠN (GIỮ NGUYÊN) ---
@@ -16,6 +15,10 @@ public class PlayerController : MonoBehaviour
     public float checkRadius = 0.5f; // Đổi tên biến này thành groundCheckDistance nếu muốn rõ hơn
     public LayerMask whatIsGround;
     public float footOffset = 0.3f; // Khoảng cách lệch sang hai bên của tia Raycast
+    [Header("Sound Effects")]
+    public AudioClip jumpSound;
+    public AudioClip runSound;
+    private AudioSource audioSource;
 
 
     // --- HÀM AWAKE() CŨ SẼ BỊ XÓA VÀ THAY BẰNG LOGIC MỚI NÀY ---
@@ -26,6 +29,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Đăng ký lắng nghe sự kiện khi script được bật
@@ -75,10 +79,34 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         moveInput = Input.GetAxisRaw("Horizontal");
+        if (Mathf.Abs(moveInput) > 0.1f && isGrounded)
+        {
+            // Nếu AudioSource chưa phát gì (hoặc đang phát clip khác)
+            if (!audioSource.isPlaying || audioSource.clip != runSound)
+            {
+                audioSource.clip = runSound; // Đặt clip là tiếng chạy
+                audioSource.loop = true;     // Bật lặp lại
+                audioSource.Play();
+            }
+        }
+        else
+        {
+            // Nếu đứng im HOẶC đang nhảy
+            // Chỉ tắt nếu nó đang phát đúng âm thanh CHẠY
+            if (audioSource.clip == runSound)
+            {
+                audioSource.Stop();
+            }
+        }
         if (isGrounded == true && (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)))
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            if (jumpSound != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
         }
+        
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("speed", Mathf.Abs(moveInput));
         anim.SetFloat("yVelocity", rb.linearVelocity.y);

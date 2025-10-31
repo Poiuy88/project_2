@@ -3,10 +3,11 @@ using UnityEngine.EventSystems;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public int attackDamage = 15;
     public GameObject attackHitbox;
 
     private Animator anim;
+    public float attackCooldown = 0.5f; 
+    private float nextAttackTime = 0f;
 
     // Dùng Awake để khởi tạo, nó được gọi trước Start
     void Awake()
@@ -33,10 +34,12 @@ public class PlayerAttack : MonoBehaviour
         {
             return;
         }
-
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
         {
-            // LOG 3: Báo rằng lệnh tấn công được ghi nhận
+            // Đặt lại mốc thời gian cho lần tấn công tiếp theo
+            // Lần đánh tiếp theo = Thời gian hiện tại + 0.5 giây
+            nextAttackTime = Time.time + attackCooldown;
+
             Debug.Log("Attack input received on: " + gameObject.name);
             Attack();
         }
@@ -53,7 +56,12 @@ public class PlayerAttack : MonoBehaviour
         anim.SetTrigger("attack");
     }
 
-    // Các hàm Enable/Disable Hitbox giữ nguyên
-    void EnableHitbox() { if (attackHitbox != null) attackHitbox.SetActive(true); }
-    void DisableHitbox() { if (attackHitbox != null) attackHitbox.SetActive(false); }
+    void EnableHitbox() 
+    { 
+        if (attackHitbox != null) attackHitbox.SetActive(true); 
+    }
+    void DisableHitbox() 
+    { 
+        if (attackHitbox != null) attackHitbox.SetActive(false); 
+    }
 }
