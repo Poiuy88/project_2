@@ -37,32 +37,39 @@ public class InventoryUI : MonoBehaviour
             inventory = PlayerInventory.instance;
         }
 
-        // 2. Tìm các thành phần UI trong Scene mới
-        Canvas canvas = FindObjectOfType<Canvas>();
-        if (canvas != null)
-        {
-            // Tìm InventoryPanel (phải khớp tên)
-            Transform panelTransform = canvas.transform.Find("InventoryPanel");
-            if (panelTransform != null)
-            {
-                inventoryPanel = panelTransform.gameObject;
 
-                // Tìm SlotHolder (khung chứa slot) BÊN TRONG InventoryPanel
-                slotHolder = inventoryPanel.transform.Find("SlotHolder"); // <-- Tên này phải khớp
-                if (slotHolder == null)
-                {
-                    Debug.LogError("InventoryUI: Không tìm thấy 'SlotHolder' bên trong 'InventoryPanel'!");
-                }
-            }
-            else
-            {
-                Debug.LogError("InventoryUI: Không tìm thấy 'InventoryPanel' trong Canvas!");
-            }
-        }
-        else
+        GameObject canvasGO = GameObject.FindGameObjectWithTag("MainCanvas");
+        if (canvasGO == null)
         {
-            Debug.LogError("InventoryUI: Không tìm thấy Canvas!");
+            // (Bạn có thể thêm Debug.LogError ở đây nếu muốn)
+            return;
         }
+
+        // Canvas canvas = FindObjectOfType<Canvas>();
+        // if (canvas != null)
+        // {
+        //     // Tìm InventoryPanel (phải khớp tên)
+        //     Transform panelTransform = canvas.transform.Find("InventoryPanel");
+        //     if (panelTransform != null)
+        //     {
+        //         inventoryPanel = panelTransform.gameObject;
+
+        //         // Tìm SlotHolder (khung chứa slot) BÊN TRONG InventoryPanel
+        //         slotHolder = inventoryPanel.transform.Find("SlotHolder"); // <-- Tên này phải khớp
+        //         if (slotHolder == null)
+        //         {
+        //             Debug.LogError("InventoryUI: Không tìm thấy 'SlotHolder' bên trong 'InventoryPanel'!");
+        //         }
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError("InventoryUI: Không tìm thấy 'InventoryPanel' trong Canvas!");
+        //     }
+        // }
+        // else
+        // {
+        //     Debug.LogError("InventoryUI: Không tìm thấy Canvas!");
+        // }
 
 
         // 3. Đăng ký sự kiện (như cũ)

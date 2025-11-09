@@ -44,13 +44,24 @@ public class UIManager : MonoBehaviour
     void FindUIElements()
     {
         if (SceneManager.GetActiveScene().name == "LoginScene") return;
+        if (PlayerPersistence.instance != null)
+    {
+        // Gán biến playerStats của UIManager = biến playerStats của Player "xịn"
+        playerStats = PlayerPersistence.instance.playerStats;
+    }
+    else
+    {
+        Debug.LogError("UIManager: Không tìm thấy PlayerPersistence instance!");
+        return; // Không làm gì nếu không có Player
+    }
 
-        Canvas canvas = FindObjectOfType<Canvas>();
-        if (canvas == null)
+        GameObject canvasGO = GameObject.FindGameObjectWithTag("MainCanvas");
+        if (canvasGO == null)
         {
-            Debug.LogError("UIManager: Could not find a Canvas in this scene! UI will not work.");
+            Debug.LogError("UIManager: Không tìm thấy Canvas với tag 'MainCanvas' trong Scene!");
             return;
         }
+        Canvas canvas = canvasGO.GetComponent<Canvas>();
 
         // --- SỬA LỖI Ở CÁC DÒNG GỌI HÀM DƯỚI ĐÂY ---
         // Phải truyền vào canvas.transform thay vì chỉ canvas

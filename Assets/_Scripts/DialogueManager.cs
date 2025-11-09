@@ -49,25 +49,31 @@ public class DialogueManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name != "LoginScene")
         {
             Debug.Log("DialogueManager is searching for UI elements.");
-            Canvas canvas = FindObjectOfType<Canvas>();
-            if (canvas != null)
+            GameObject canvasGO = GameObject.FindGameObjectWithTag("MainCanvas");
+            if (canvasGO == null)
             {
-                // Tìm các đối tượng con bằng tên
-                // Đảm bảo tên trong Hierarchy của bạn khớp với các tên này
-                dialoguePanel = canvas.transform.Find("DialoguePanel").gameObject;
-                nameText = dialoguePanel.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
-                dialogueText = dialoguePanel.transform.Find("DialogueText").GetComponent<TextMeshProUGUI>();
+                Debug.LogError("DialogueManager: Không tìm thấy Canvas với tag 'MainCanvas'!");
+                return;
+            }
+            // Canvas canvas = FindObjectOfType<Canvas>();
+            // if (canvas != null)
+            // {
+            //     // Tìm các đối tượng con bằng tên
+            //     // Đảm bảo tên trong Hierarchy của bạn khớp với các tên này
+            //     dialoguePanel = canvas.transform.Find("DialoguePanel").gameObject;
+            //     nameText = dialoguePanel.transform.Find("NameText").GetComponent<TextMeshProUGUI>();
+            //     dialogueText = dialoguePanel.transform.Find("DialogueText").GetComponent<TextMeshProUGUI>();
 
-                // Ẩn panel đi khi bắt đầu
-                if (dialoguePanel != null)
-                {
-                    dialoguePanel.SetActive(false);
-                }
-            }
-            else
-            {
-                Debug.LogWarning("DialogueManager could not find a Canvas in this scene.");
-            }
+            //     // Ẩn panel đi khi bắt đầu
+            //     if (dialoguePanel != null)
+            //     {
+            //         dialoguePanel.SetActive(false);
+            //     }
+            // }
+            // else
+            // {
+            //     Debug.LogWarning("DialogueManager could not find a Canvas in this scene.");
+            // }
         }
     }
 

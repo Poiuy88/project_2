@@ -44,12 +44,19 @@ public class CharacterUIManager : MonoBehaviour
     void FindUIElements()
     {
         // 1. Tìm Canvas
-        Canvas canvas = FindObjectOfType<Canvas>();
-        if (canvas == null)
+        // Canvas canvas = FindObjectOfType<Canvas>();
+        // if (canvas == null)
+        // {
+        //     Debug.LogError("CharacterUIManager: Không tìm thấy Canvas trong scene!");
+        //     return;
+        // }
+        GameObject canvasGO = GameObject.FindGameObjectWithTag("MainCanvas");
+        if (canvasGO == null)
         {
-            Debug.LogError("CharacterUIManager: Không tìm thấy Canvas trong scene!");
+            Debug.LogError("CharacterUIManager: Không tìm thấy Canvas với tag 'MainCanvas'!");
             return;
         }
+        Canvas canvas = canvasGO.GetComponent<Canvas>();
 
         // 2. Tìm các panel con bằng tên
         characterHubPanel = FindChildGameObject(canvas.transform, "CharacterHubPanel");
