@@ -1,20 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; 
 using UnityEngine.SceneManagement;
 
 public class InventoryUI : MonoBehaviour
 {
-    // --- SỬA ĐỔI: Chuyển các tham chiếu Scene sang private ---
     private GameObject inventoryPanel;
     private Transform slotHolder;
-    // --------------------------------------------------------
-
-    // GIỮ LẠI: Prefab này được kéo từ Project nên sẽ không bị mất
     public GameObject slotPrefab;
 
-    private PlayerInventory inventory;
+    private PlayerInventory inventory; // Đây là inventory "xịn"
 
-    // Đăng ký và hủy đăng ký sự kiện (Giữ nguyên)
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -25,72 +20,60 @@ public class InventoryUI : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // --- HÀM NÀY ĐƯỢC NÂNG CẤP HOÀN TOÀN ---
+    // HÀM NÀY ĐƯỢC SỬA LỖI HOÀN TOÀN
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Bỏ qua nếu ở màn Login
         if (scene.name == "LoginScene") return;
 
-        // 1. Tìm PlayerInventory (như cũ)
-        if (inventory == null)
+        // --- BẮT ĐẦU SỬA LỖI (LOGIC TÌM KIẾM) ---
+        if (PlayerPersistence.instance != null)
         {
-            inventory = PlayerInventory.instance;
+            // Hủy đăng ký sự kiện khỏi inventory CŨ (nếu có)
+            // (Phòng trường hợp đăng ký nhầm)
+            if (inventory != null)
+            {
+                inventory.onInventoryChangedCallback -= UpdateUI;
+            }
+
+            // Lấy inventory CHÍNH XÁC từ Player "xịn"
+            inventory = PlayerPersistence.instance.playerInventory;
+
+            // Đăng ký sự kiện với inventory "xịn"
+            inventory.onInventoryChangedCallback += UpdateUI;
         }
-
-
-        GameObject canvasGO = GameObject.FindGameObjectWithTag("MainCanvas");
-        if (canvasGO == null)
+        else
         {
-            // (Bạn có thể thêm Debug.LogError ở đây nếu muốn)
+            Debug.LogError("InventoryUI: Không tìm thấy PlayerPersistence!");
             return;
         }
+        // --- KẾT THÚC SỬA LỖI ---
 
-        // Canvas canvas = FindObjectOfType<Canvas>();
-        // if (canvas != null)
-        // {
-        //     // Tìm InventoryPanel (phải khớp tên)
-        //     Transform panelTransform = canvas.transform.Find("InventoryPanel");
-        //     if (panelTransform != null)
-        //     {
-        //         inventoryPanel = panelTransform.gameObject;
+        // Tìm các thành phần UI (Code này đã đúng)
+        GameObject canvasGO = GameObject.FindGameObjectWithTag("MainCanvas");
+        if (canvasGO != null)
+        {
+            Transform panelTransform = canvasGO.transform.Find("InventoryPanel");
+            if (panelTransform != null)
+            {
+                inventoryPanel = panelTransform.gameObject;
+                slotHolder = inventoryPanel.transform.Find("SlotHolder"); 
+                if (slotHolder == null) Debug.LogError("InventoryUI: Không tìm thấy 'SlotHolder'!");
+            }
+            else Debug.LogError("InventoryUI: Không tìm thấy 'InventoryPanel'!");
+        }
+        else Debug.LogError("InventoryUI: Không tìm thấy Canvas!");
 
-        //         // Tìm SlotHolder (khung chứa slot) BÊN TRONG InventoryPanel
-        //         slotHolder = inventoryPanel.transform.Find("SlotHolder"); // <-- Tên này phải khớp
-        //         if (slotHolder == null)
-        //         {
-        //             Debug.LogError("InventoryUI: Không tìm thấy 'SlotHolder' bên trong 'InventoryPanel'!");
-        //         }
-        //     }
-        //     else
-        //     {
-        //         Debug.LogError("InventoryUI: Không tìm thấy 'InventoryPanel' trong Canvas!");
-        //     }
-        // }
-        // else
-        // {
-        //     Debug.LogError("InventoryUI: Không tìm thấy Canvas!");
-        // }
-
-
-        // 3. Đăng ký sự kiện (như cũ)
-        inventory.onInventoryChangedCallback -= UpdateUI;
-        inventory.onInventoryChangedCallback += UpdateUI;
-
-        // 4. Cập nhật UI ngay lập tức
+        // Cập nhật UI ngay lập tức (giờ sẽ dùng đúng inventory Lv 2)
         UpdateUI();
     }
-    // --- KẾT THÚC NÂNG CẤP ---
 
 
-    // Hàm UpdateUI() không cần sửa, nhưng hãy đảm bảo bạn có kiểm tra null
+    // HÀM NÀY GIỮ NGUYÊN
     void UpdateUI()
     {
-        // Kiểm tra để đảm bảo các tham chiếu không bị rỗng
-        // Giờ đây slotHolder sẽ được tìm thấy
         if (slotHolder == null || slotPrefab == null || inventory == null)
         {
-            // Lỗi này vẫn có thể xuất hiện nếu tên trong Hierarchy của bạn không khớp
-            Debug.LogWarning("InventoryUI is missing references (SlotHolder, SlotPrefab, or Inventory). UI cannot be updated.");
+            Debug.LogWarning("InventoryUI missing references, cannot update.");
             return;
         }
 
@@ -100,7 +83,7 @@ public class InventoryUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        // Tạo slot mới cho từng vật phẩm trong túi đồ
+        // Tạo slot mới cho từng vật phẩm trong túi đồ "xịn"
         foreach (var itemEntry in inventory.items)
         {
             GameObject slotGO = Instantiate(slotPrefab, slotHolder);

@@ -1,58 +1,52 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraFollow : MonoBehaviour
 {
-    // Biến để kéo thả đối tượng Player vào
     public Transform target;
-
-    // Biến để điều chỉnh độ mượt khi camera di chuyển
     public float smoothing = 5f;
 
-    // Biến để giữ khoảng cách ban đầu giữa camera và nhân vật
-    private Vector3 offset;
+    // --- BẮT ĐẦU SỬA ĐỔI ---
+    // Thay vì tính toán offset, chúng ta sẽ TỰ ĐỊNH NGHĨA nó
+    // Bạn có thể chỉnh giá trị này trong Inspector
+    public Vector3 offset = new Vector3(0f, 1f, -10f);
+    
+    // Bỏ biến 'offsetCalculated'
+    // --- KẾT THÚC SỬA ĐỔI ---
 
-    void Start()
+
+    void LateUpdate()
     {
-        // === PHẦN CODE MỚI ĐỂ SỬA LỖI ===
-
-        // 1. Kiểm tra xem camera có đang bị "lạc lõng" (chưa có target) không
+        // 1. Nếu chưa có mục tiêu (target)
         if (target == null)
         {
-            Debug.Log("Camera target not assigned. Searching for Player...");
-            // 2. Nếu chưa có, hãy tự động tìm đối tượng có tag "Player" trong màn chơi
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-            // 3. Nếu tìm thấy
-            if (player != null)
+            // Chỉ tìm Player nếu chúng ta KHÔNG ở LoginScene
+            if (SceneManager.GetActiveScene().name != "LoginScene")
             {
-                // Gán target của camera là transform của đối tượng Player vừa tìm được
-                target = player.transform;
-                Debug.Log("Player found! Camera is now following the player.");
+                FindPlayer();
             }
-            else
+            
+            if (target == null)
             {
-                // Nếu không tìm thấy, báo lỗi để chúng ta biết
-                Debug.LogError("Could not find GameObject with tag 'Player' for the camera to follow.");
-                return; // Dừng lại để tránh gây thêm lỗi
+                return; 
             }
         }
 
-        // === KẾT THÚC PHẦN CODE MỚI ===
-
-        // Tính toán khoảng cách ban đầu (đoạn code này vẫn giữ nguyên)
-        offset = transform.position - target.position;
+        // 2. Di chuyển camera (LOGIC ĐƯỢC ĐƠN GIẢN HÓA)
+        // Chúng ta không cần tính toán offset nữa, chỉ cần áp dụng nó
+        Vector3 targetCamPos = target.position + offset;
+        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
     }
 
-    // LateUpdate được gọi sau khi tất cả các hàm Update đã chạy xong
-    void LateUpdate()
+    // Hàm riêng để tìm Player (giữ nguyên)
+    void FindPlayer()
     {
-        // Thêm một kiểm tra để đảm bảo target không bị mất giữa chừng
-        if (target == null) return;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
         
-        // Vị trí mới mà camera muốn đến
-        Vector3 targetCamPos = target.position + offset;
-
-        // Di chuyển camera một cách mượt mà từ vị trí hiện tại đến vị trí mới
-        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
+        if (player != null)
+        {
+            target = player.transform;
+            Debug.Log("CameraFollow: Đã tìm thấy Player!");
+        }
     }
 }
