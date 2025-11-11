@@ -480,7 +480,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 1173d18bf4045654397a5bff02caba0c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -525,7 +525,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.3585763, y: -0.108323395}
+  m_Offset: {x: -0.3585763, y: 0.0778721}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -535,7 +535,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.3513432, y: 3.6265178}
+  m_Size: {x: 2.3513432, y: 3.254127}
   m_EdgeRadius: 0
 --- !u!114 &7998357044892975882
 MonoBehaviour:
@@ -607,7 +607,7 @@ MonoBehaviour:
   baseMoveSpeed: 5
   baseMaxHealth: 100
   baseMaxMana: 50
-  baseAttack: 5
+  baseAttack: 10
   baseDefense: 0
   currentHealth: 0
   currentMana: 0
@@ -642,6 +642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStats: {fileID: 0}
+  playerInventory: {fileID: 0}
 --- !u!114 &3743673166444985710
 MonoBehaviour:
   m_ObjectHideFlags: 0

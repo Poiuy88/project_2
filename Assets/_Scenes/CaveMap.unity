@@ -252,6 +252,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f3869e3840640943ae4bf3b78d68084, type: 3}
+--- !u!1 &277677382 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8232077064433225680, guid: 7f3869e3840640943ae4bf3b78d68084,
+    type: 3}
+  m_PrefabInstance: {fileID: 277677381}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &884324584
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -624,10 +630,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1d3f7452ff59de4ba7105b9f876b114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
-  spawnPointName: 
+  sceneToLoad: MountainFootMap
+  spawnPointName: SpawnPoint_FromCave
   isExitPortal: 1
-  interactionPrompt: {fileID: 2028472761}
+  interactionPrompt: {fileID: 277677382}
 --- !u!4 &1928053815
 Transform:
   m_ObjectHideFlags: 0
@@ -2018,12 +2024,6 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
---- !u!1 &2028472761 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1574430737741262900, guid: 7f3869e3840640943ae4bf3b78d68084,
-    type: 3}
-  m_PrefabInstance: {fileID: 277677381}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6057245569811753730
 PrefabInstance:
   m_ObjectHideFlags: 0

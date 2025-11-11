@@ -293,7 +293,7 @@ MonoBehaviour:
   maxHealth: 50
   currentHealth: 0
   hitCooldown: 0.5
-  expValue: 15
+  expValue: 150
   coinPrefab: {fileID: 3288311925577276711, guid: 8e288083387dc95418370380930bb1bd,
     type: 3}
   respawnTime: 10

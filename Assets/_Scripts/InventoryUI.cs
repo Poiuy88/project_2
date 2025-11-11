@@ -29,7 +29,6 @@ public class InventoryUI : MonoBehaviour
         if (PlayerPersistence.instance != null)
         {
             // Hủy đăng ký sự kiện khỏi inventory CŨ (nếu có)
-            // (Phòng trường hợp đăng ký nhầm)
             if (inventory != null)
             {
                 inventory.onInventoryChangedCallback -= UpdateUI;
@@ -39,7 +38,15 @@ public class InventoryUI : MonoBehaviour
             inventory = PlayerPersistence.instance.playerInventory;
 
             // Đăng ký sự kiện với inventory "xịn"
-            inventory.onInventoryChangedCallback += UpdateUI;
+            // (Thêm kiểm tra null để đảm bảo an toàn)
+            if (inventory != null)
+            {
+                inventory.onInventoryChangedCallback += UpdateUI;
+            }
+            else
+            {
+                Debug.LogError("InventoryUI: Không thể tìm thấy PlayerInventory trên PlayerPersistence!");
+            }
         }
         else
         {
@@ -63,7 +70,7 @@ public class InventoryUI : MonoBehaviour
         }
         else Debug.LogError("InventoryUI: Không tìm thấy Canvas!");
 
-        // Cập nhật UI ngay lập tức (giờ sẽ dùng đúng inventory Lv 2)
+        // Cập nhật UI ngay lập tức (giờ sẽ dùng đúng inventory của Player "xịn")
         UpdateUI();
     }
 

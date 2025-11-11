@@ -6,6 +6,7 @@ public class PlayerPersistence : MonoBehaviour
 
     [HideInInspector] public PlayerStats playerStats;
 
+    // --- BẮT ĐẦU CODE MỚI ---
     // Thêm tham chiếu đến túi đồ
     [HideInInspector] public PlayerInventory playerInventory;
     // --- KẾT THÚC CODE MỚI ---
@@ -19,6 +20,7 @@ public class PlayerPersistence : MonoBehaviour
 
             playerStats = GetComponent<PlayerStats>();
 
+            // --- BẮT ĐẦU CODE MỚI ---
             // Lấy component túi đồ
             playerInventory = GetComponent<PlayerInventory>();
             // --- KẾT THÚC CODE MỚI ---

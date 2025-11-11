@@ -2638,7 +2638,7 @@ MonoBehaviour:
   sceneToLoad: VillageMap
   spawnPointName: SpawnPoint_FromMountain
   isExitPortal: 0
-  interactionPrompt: {fileID: 1941587495}
+  interactionPrompt: {fileID: 2012178952}
 --- !u!61 &825273478
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4543,7 +4543,7 @@ MonoBehaviour:
   sceneToLoad: CaveMap
   spawnPointName: SpawnPoint_FromMountain
   isExitPortal: 0
-  interactionPrompt: {fileID: 1941587495}
+  interactionPrompt: {fileID: 2012178952}
 --- !u!4 &1157560971
 Transform:
   m_ObjectHideFlags: 0
@@ -10866,7 +10866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fastTravelPanel: {fileID: 1189335697}
-  interactionPrompt: {fileID: 1941587495}
+  interactionPrompt: {fileID: 2012178952}
 --- !u!58 &1872169608
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -11194,12 +11194,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 141278062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1941587495 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2962002758887102429, guid: 7f3869e3840640943ae4bf3b78d68084,
-    type: 3}
-  m_PrefabInstance: {fileID: 2012178951}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2012178951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11343,6 +11337,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f3869e3840640943ae4bf3b78d68084, type: 3}
+--- !u!1 &2012178952 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8232077064433225680, guid: 7f3869e3840640943ae4bf3b78d68084,
+    type: 3}
+  m_PrefabInstance: {fileID: 2012178951}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2017976511
 GameObject:
   m_ObjectHideFlags: 0
@@ -11861,8 +11861,8 @@ SpriteRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 141278062}
   - {fileID: 2012178951}
+  - {fileID: 141278062}
   - {fileID: 825273479}
   - {fileID: 1611108515}
   - {fileID: 1872169611}
